@@ -3,6 +3,7 @@ import { access, readdir, stat } from "node:fs/promises"
 import { join } from "node:path"
 import { config } from "../infra/config.js"
 import { solution } from "../infra/solution.js"
+import { cachedFetchFromAoC } from "../infra/input.js"
 
 const day = parseInt(process.argv[2], 10)
 
@@ -80,7 +81,6 @@ async function execDay(day) {
    * @param {string} input
    */
   const solver = (input) => {
-    input = module.useExample ? module.exampleInput : input
     if (!module.disableInputTrim) {
       input = input.trimEnd()
     }
@@ -92,5 +92,9 @@ async function execDay(day) {
         [() => module.part1?.(parse()), () => module.part2?.(parse())]
   }
 
-  await solution({ solve: solver, day })
+  await solution({
+    solve: solver,
+    day,
+    input: module.useExample ? () => module.exampleInput : cachedFetchFromAoC,
+  })
 }

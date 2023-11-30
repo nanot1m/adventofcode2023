@@ -23,5 +23,5 @@ export function part1(input) {
  * @param {InputType} input
  */
 export function part2(input) {
-  return 0
+  return it(input).groupsOf(3).map(sum).max()
 }

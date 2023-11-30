@@ -1,7 +1,7 @@
 // @ts-check
 import { performance } from "perf_hooks"
 import { parse } from "path"
-import { cachedFetchFromAoC, HttpError, submitAndLog } from "./input.js"
+import { HttpError, submitAndLog } from "./input.js"
 
 const currentDay = parse(process.argv[1]).name
 
@@ -21,14 +21,14 @@ const drawText = (/** @type {string} */ text) =>
 
 /**
  * @param {Object} config
- * @param {(day: number) => string | Promise<string>} [config.input]
+ * @param {(day: number) => string | Promise<string>} config.input
  * @param {(input: string) => Array<() => any>} config.solve
  * @param {Record<number, boolean>} [config.submit]
  * @param {(day: number, level: number, result: string) => void} [config.submitFn]
  * @param {number | string} [config.day]
  */
 export async function solution({
-  input = cachedFetchFromAoC,
+  input,
   solve,
   submit = { 1: false, 2: false },
   submitFn = submitAndLog,
