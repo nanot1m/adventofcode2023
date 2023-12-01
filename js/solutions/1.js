@@ -1,6 +1,6 @@
 // @ts-check
 
-import { it } from "../modules/itertools.js"
+import { it, range } from "../modules/itertools.js"
 import { t } from "../modules/parser.js"
 
 export const useExample = false
@@ -23,51 +23,28 @@ export function part1(input) {
     .sum()
 }
 
-const nums = [
-  "one",
-  "two",
-  "three",
-  "four",
-  "five",
-  "six",
-  "seven",
-  "eight",
-  "nine",
-]
+/** @type {any} */
+const trie = {
+  ...[, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+  o: { n: { e: 1 } },
+  t: { w: { o: 2 }, h: { r: { e: { e: 3 } } } },
+  f: { o: { u: { r: 4 } }, i: { v: { e: 5 } } },
+  s: { i: { x: 6 }, e: { v: { e: { n: 7 } } } },
+  e: { i: { g: { h: { t: 8 } } } },
+  n: { i: { n: { e: 9 } } },
+}
 
 /**
- *
- * @param {string} s
- * @returns
+ * @param {string} line
  */
-function findNumbersInString(s) {
-  let left = 0
-
-  const result = []
-
-  while (left < s.length) {
-    if (/\d/.test(s[left])) {
-      result.push(Number(s[left]))
-      left++
-      continue
+function* findNumbersInString(line) {
+  for (let left = 0, node = trie; left < line.length; left++, node = trie) {
+    for (let right = left; right < line.length; right++) {
+      node = node[line[right]]
+      if (node === undefined) break
+      if (typeof node === "number") yield node
     }
-
-    let cur = s[left]
-    let right = left + 1
-    while (right < s.length && right - left < 6) {
-      cur += s[right]
-      const idx = nums.indexOf(cur)
-      if (idx >= 0) {
-        result.push(idx + 1)
-        left = right - 1
-        break
-      }
-      right++
-    }
-    left++
   }
-
-  return result
 }
 
 /**
@@ -76,6 +53,7 @@ function findNumbersInString(s) {
 export function part2(input) {
   return it(input)
     .map(findNumbersInString)
-    .map((x) => Number(`${x.at(0)}${x.at(-1)}`))
+    .map((x) => [...x])
+    .map((x) => x.at(0) * 10 + x.at(-1))
     .sum()
 }
