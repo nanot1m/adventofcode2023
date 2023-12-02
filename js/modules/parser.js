@@ -189,6 +189,25 @@ const commonTypes = createParserFactory({
       },
     }),
   }),
+
+  /**
+   * @template {readonly string[]} T
+   *
+   * @param {T} values
+   * @returns {Parser<T[number]>}
+   */
+  enum: (...values) => {
+    return {
+      // @ts-ignore
+      parse: (strVal) => {
+        // @ts-ignore
+        if (!values.includes(strVal)) {
+          throw new Error(`Invalid enum value "${strVal}"`)
+        }
+        return strVal
+      },
+    }
+  },
 })
 
 /**

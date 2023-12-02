@@ -1,5 +1,6 @@
 // @ts-check
 
+import { it, multiply } from "../modules/itertools.js"
 import { t } from "../modules/parser.js"
 
 export const useExample = false
@@ -17,7 +18,10 @@ export const parseInput = t.arr(
   t.tuple(
     [
       t.tuple([t.str(), t.int()]),
-      t.arr(t.arr(t.tuple([t.int(), t.str()], " "), ", "), "; "),
+      t.arr(
+        t.arr(t.tuple([t.int(), t.enum("red", "green", "blue")]), ", "),
+        "; ",
+      ),
     ],
     ": ",
   ),
@@ -27,42 +31,26 @@ export const parseInput = t.arr(
  * @param {InputType} input
  */
 export function part1(input) {
-  /** @type {Record<string, number>} */
   const limits = { red: 12, green: 13, blue: 14 }
 
-  let sum = 0
-  for (const line of input) {
-    const [[, id], sets] = line
-    let lineValid = true
-    outer: for (const set of sets) {
-      for (const [count, color] of set) {
-        if (count > limits[color]) {
-          lineValid = false
-          break outer
-        }
-      }
-    }
-    if (lineValid) sum += id
-  }
-
-  return sum
+  return it(input)
+    .filter(([, ss]) => ss.flat().every(([c, col]) => c <= limits[col]))
+    .map(([[, id]]) => id)
+    .sum()
 }
 
 /**
  * @param {InputType} input
  */
 export function part2(input) {
-  let sum = 0
-  for (const line of input) {
-    const [, sets] = line
-    /** @type {Record<string, number>} */
-    const limits = { red: 0, green: 0, blue: 0 }
-    for (const set of sets) {
-      for (const [count, color] of set) {
-        limits[color] = Math.max(limits[color], count)
-      }
-    }
-    sum += limits.red * limits.green * limits.blue
-  }
-  return sum
+  return it(input)
+    .map(([, sets]) => sets.flat())
+    .map((pairs) =>
+      pairs.reduce(
+        (acc, [c, col]) => ({ ...acc, [col]: Math.max(acc[col], c) }),
+        { red: 0, green: 0, blue: 0 },
+      ),
+    )
+    .map((p) => p.red * p.green * p.blue)
+    .sum()
 }
