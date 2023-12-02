@@ -128,77 +128,61 @@ function parse(strVal, type) {
  * @property {(strVal: string) => T} parse
  */
 
-/**
- * @template {Record<keyof typeof PARSERS, (...args: any[]) => Parser<unknown>>} T
- *
- * @param {T} parserFactory
- * @returns {T}
- */
-function createParserFactory(parserFactory) {
-  return parserFactory
-}
+const commonTypes = {
+  int: () => mappableParser(PARSERS.int),
 
-const commonTypes = createParserFactory({
-  int: () => PARSERS.int,
+  str: () => mappableParser(PARSERS.str),
 
-  str: () => PARSERS.str,
+  vec: () => mappableParser(PARSERS.vec),
 
-  vec: () => PARSERS.vec,
-
-  vec3: () => PARSERS.vec3,
+  vec3: () => mappableParser(PARSERS.vec3),
 
   /**
    * @template T
    *
    * @param {Parser<T>} type
-   * @param {string} [separator]
-   * @returns {WithSeparator<Parser<T[]>>}}
+   * @param {string | RegExp} [separator]
    */
-  arr: (type, separator) => ({
-    parse: (strVal) => {
-      return strVal
-        .split(separator ?? tryGetSeparator(strVal) ?? ",")
-        .map((x) => type.parse(x))
-    },
-    /**
-     * @param {string} separator
-     */
-    withSeparator: (separator) => ({
-      parse: (strVal) => strVal.split(separator).map((x) => type.parse(x)),
+  arr: (type, separator) =>
+    mappableParser({
+      parse: (strVal) => {
+        return strVal
+          .split(separator ?? tryGetSeparator(strVal) ?? ",")
+          .map((x) => type.parse(x))
+      },
     }),
-  }),
 
   /**
    * @template {Parser<unknown>[]} T
    *
    * @param {import("ts-toolbelt").F.Narrow<T>} types
    * @param {string} [separator]
-   * @returns {WithSeparator<Parser<{[K in keyof T]: T[K] extends Parser<infer U> ? U : never}>>}
    */
-  tuple: (types, separator) => ({
-    // @ts-ignore
-    parse: (strVal) => {
-      return strVal
-        .split(separator ?? tryGetSeparator(strVal) ?? ",")
-        .map((x, i) => types[i].parse(x))
-    },
-    withSeparator: (separator) => ({
-      // @ts-ignore
+  tuple: (types, separator) =>
+    mappableParser({
+      /**
+       * @param {string} strVal
+       * @returns {{[K in keyof T]: T[K] extends Parser<infer U> ? U : never}}
+       */
       parse: (strVal) => {
-        return strVal.split(separator).map((x, i) => types[i].parse(x))
+        // @ts-ignore
+        return strVal
+          .split(separator ?? tryGetSeparator(strVal) ?? ",")
+          .map((x, i) => types[i].parse(x))
       },
     }),
-  }),
 
   /**
    * @template {readonly string[]} T
    *
    * @param {T} values
-   * @returns {Parser<T[number]>}
    */
-  enum: (...values) => {
-    return {
-      // @ts-ignore
+  enum: (...values) =>
+    mappableParser({
+      /**
+       * @param {string} strVal
+       * @returns {T[number]}
+       */
       parse: (strVal) => {
         // @ts-ignore
         if (!values.includes(strVal)) {
@@ -206,9 +190,24 @@ const commonTypes = createParserFactory({
         }
         return strVal
       },
-    }
-  },
-})
+    }),
+}
+
+/**
+ * @template T
+ * @param {Parser<T>} parser
+ */
+function mappableParser(parser) {
+  return {
+    ...parser,
+    /**
+     * @template U
+     * @param {(val: T) => U} fn
+     */
+    map: (fn) =>
+      mappableParser({ ...parser, parse: (x) => fn(parser.parse(x)) }),
+  }
+}
 
 /**
  * @template {string[]} T
@@ -238,7 +237,7 @@ function tpl(strings, ...keys) {
     return /** @type {any} */ (model)
   }
 
-  return { parse: parseInternal }
+  return mappableParser({ parse: parseInternal })
 }
 
 export const t = {

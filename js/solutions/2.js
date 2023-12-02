@@ -1,6 +1,6 @@
 // @ts-check
 
-import { it, multiply } from "../modules/itertools.js"
+import { it } from "../modules/itertools.js"
 import { t } from "../modules/parser.js"
 
 export const useExample = false
@@ -14,18 +14,19 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green`
 
 /** @typedef {ReturnType<typeof parseInput>} InputType */
 
-export const parseInput = t.arr(
-  t.tuple(
-    [
-      t.tuple([t.str(), t.int()]),
-      t.arr(
-        t.arr(t.tuple([t.int(), t.enum("red", "green", "blue")]), ", "),
-        "; ",
-      ),
-    ],
-    ": ",
-  ),
-).parse
+const setsParser = t.arr(
+  t
+    .tuple([t.int(), t.enum("red", "green", "blue")])
+    .map(([count, color]) => ({ count, color })),
+  /[,;]\s/g,
+)
+
+const lineParser = t.tpl`Game ${"id|int"}: ${"sets|str"}`.map((x) => ({
+  id: x.id,
+  sets: setsParser.parse(x.sets),
+}))
+
+export const parseInput = t.arr(lineParser).parse
 
 /**
  * @param {InputType} input
@@ -34,8 +35,8 @@ export function part1(input) {
   const limits = { red: 12, green: 13, blue: 14 }
 
   return it(input)
-    .filter(([, ss]) => ss.flat().every(([c, col]) => c <= limits[col]))
-    .map(([[, id]]) => id)
+    .filter((game) => game.sets.every((p) => p.count <= limits[p.color]))
+    .map((game) => game.id)
     .sum()
 }
 
@@ -44,10 +45,9 @@ export function part1(input) {
  */
 export function part2(input) {
   return it(input)
-    .map(([, sets]) => sets.flat())
-    .map((pairs) =>
-      pairs.reduce(
-        (acc, [c, col]) => ({ ...acc, [col]: Math.max(acc[col], c) }),
+    .map(({ sets }) =>
+      sets.reduce(
+        (acc, p) => ({ ...acc, [p.color]: Math.max(acc[p.color], p.count) }),
         { red: 0, green: 0, blue: 0 },
       ),
     )
