@@ -14,19 +14,12 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green`
 
 /** @typedef {ReturnType<typeof parseInput>} InputType */
 
-const setsParser = t.arr(
-  t
-    .tuple([t.int(), t.enum("red", "green", "blue")])
-    .map(([count, color]) => ({ count, color })),
-  /[,;]\s/g,
-)
-
-const lineParser = t.tpl`Game ${"id|int"}: ${"sets|str"}`.map((x) => ({
-  id: x.id,
-  sets: setsParser.parse(x.sets),
-}))
-
-export const parseInput = t.arr(lineParser).parse
+const colorParser = t.named("color", t.enum("red", "green", "blue"))
+const countParser = t.named("count", t.int())
+const pairParser = t.tpl2`${countParser} ${colorParser}`
+const setsParser = t.named("sets", t.arr(pairParser, /[,;]\s/g))
+const idParser = t.named("id", t.int())
+export const parseInput = t.arr(t.tpl2`Game ${idParser}: ${setsParser}`).parse
 
 /**
  * @param {InputType} input

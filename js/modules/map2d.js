@@ -4,7 +4,7 @@ import * as V from "./vec.js"
 
 /**
  * @template T
- * 
+ *
  * @typedef {Object} BfsPos
  * @property {V.Vec2} pos
  * @property {number} distance
@@ -78,6 +78,7 @@ export class Map2d {
    * @template R
    */
   static fromArray(raw) {
+    /** @type {Map2d<R>} */
     const map = new Map2d()
     raw.forEach((row, y) => {
       row.forEach((value, x) => {
@@ -269,6 +270,28 @@ export class Map2d {
       .map((row) => row.join(""))
       .join("\n")
   }
+
+  /**
+   *
+   * @param {V.Vec2} pos
+   * @returns {{pos: V.Vec2; value: T}[]} 4 neighbors
+   */
+  around4(pos) {
+    return V.DIRS_4.map((dir) => V.add(pos, dir))
+      .filter((pos) => this.has(pos))
+      .map((pos) => ({ pos, value: this.get(pos) }))
+  }
+
+  /**
+   *
+   * @param {V.Vec2} pos
+   * @returns {{pos: V.Vec2; value: T}[]} 8 neighbors
+   */
+  around8(pos) {
+    return V.DIRS_8.map((dir) => V.add(pos, dir))
+      .filter((pos) => this.has(pos))
+      .map((pos) => ({ pos, value: this.get(pos) }))
+  }
 }
 
 /**
@@ -282,7 +305,6 @@ export function toMap2d(raw) {
 
 /**
  * @param {string} input
- * @returns
  */
 export function parseMap2d(input) {
   const raw = input.split("\n").map((line) => line.split(""))

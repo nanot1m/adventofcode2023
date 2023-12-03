@@ -1,7 +1,7 @@
 // @ts-check
 
 import { V, V3 } from "./index.js"
-import { tryGetSeparator } from "./lib.js"
+import { tryGetSeparator, tuple } from "./lib.js"
 
 /**
  * @template T
@@ -210,7 +210,7 @@ function mappableParser(parser) {
 }
 
 /**
- * @template {string[]} T
+ * @template {(string)[]} T
  *
  * @param {TemplateStringsArray} strings
  * @param {T} keys
@@ -240,7 +240,65 @@ function tpl(strings, ...keys) {
   return mappableParser({ parse: parseInternal })
 }
 
+/**
+ * @template {string} K
+ * @template T
+ *
+ * @param {K} name
+ * @param {Parser<T>} parser
+ * @returns {NamedParser<K, T>}
+ */
+function named(name, parser) {
+  return {
+    ...parser,
+    name,
+  }
+}
+
+/**
+ * @template {string} K
+ * @template T
+ *
+ * @typedef {object} NamedParser
+ *
+ * @property {(strVal: string) => T} parse
+ * @property {K} name
+ */
+
+/**
+ * @template {NamedParser<any, any>[]} T
+ *
+ * @param {TemplateStringsArray} strings
+ * @param  {T} keys
+ */
+function tpl2(strings, ...keys) {
+  /**
+   * @param {string} input
+   * @returns {{[P in T[number] as P['name']]: ReturnType<P['parse']> }}
+   */
+  function parseInternal(input) {
+    /** @type {Record<string, any>} */
+    const model = {}
+    let lastIndex = 0
+    for (let i = 0; i < keys.length; i++) {
+      const start = strings[i].length + lastIndex
+      const end = strings[i + 1]
+        ? input.indexOf(strings[i + 1], start)
+        : input.length
+      const strVal = input.slice(start, end)
+      const namedParser = keys[i]
+      model[namedParser.name] = namedParser.parse(strVal)
+      lastIndex = end
+    }
+    return /** @type {any} */ (model)
+  }
+
+  return mappableParser({ parse: parseInternal })
+}
+
 export const t = {
   ...commonTypes,
+  named,
   tpl,
+  tpl2,
 }
