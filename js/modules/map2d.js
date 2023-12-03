@@ -3,23 +3,23 @@
 import * as V from "./vec.js"
 
 /**
+ * @template T
+ * 
  * @typedef {Object} BfsPos
  * @property {V.Vec2} pos
  * @property {number} distance
  * @property {T} value
  * @property {BfsPos<T>} [parent]
- *
- * @template T
  */
 
 /**
+ *
+ * @template T
  *
  * @param {Map2d<T>} map2d
  * @param {(from: BfsPos<T>, to: BfsPos<T>) => boolean} canGoFromTo
  * @param {V.Vec2 | Iterable<V.Vec2>} start
  * @param {(pos: V.Vec2) => Iterable<V.Vec2>} getNeighbors
- *
- * @template T
  */
 export function* bfs(map2d, canGoFromTo, start, getNeighbors) {
   /** @type {BfsPos<T>[]} */
