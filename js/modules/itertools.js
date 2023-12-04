@@ -1,7 +1,6 @@
 // @ts-check
 
 import { add, mul } from "./lib.js"
-import * as V from "./vec.js"
 
 /**
  * @param {number} [start]

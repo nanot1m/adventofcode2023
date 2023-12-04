@@ -148,6 +148,8 @@ const commonTypes = {
       parse: (strVal) => {
         return strVal
           .split(separator ?? tryGetSeparator(strVal) ?? ",")
+          .map((x) => x.trim())
+          .filter((x) => x !== "")
           .map((x) => type.parse(x))
       },
     }),
