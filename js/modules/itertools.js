@@ -578,7 +578,7 @@ export function max(iterable) {
  * @returns {FluentIterable<T>}
  * @template T
  */
-export const it = (iterable) => {
+export function it(iterable) {
   /**
    * @type {FluentIterable<any>}
    */
@@ -648,3 +648,10 @@ export const it = (iterable) => {
   }
   return /** @type {FluentIterable<T>} */ (returnValue)
 }
+
+/**
+ * @template T
+ *
+ * @param {T} value
+ */
+it.of = (value) => it([value])

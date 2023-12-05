@@ -1,7 +1,8 @@
 // @ts-check
 
-import { it, range } from "../modules/itertools.js"
+import { it } from "../modules/itertools.js"
 import { t } from "../modules/parser.js"
+import { Range } from "../modules/range.js"
 
 export const useExample = false
 
@@ -49,22 +50,25 @@ const blocksParser = t.arr(t.str())
 export const parseInput = (/** @type {string} */ input) => {
   const [seedsBlock, ...blocks] = blocksParser.parse(input)
   const seeds = seedsParser.parse(seedsBlock).seeds
-  const maps = blocks
-    .map(blocksParser.parse)
-    .map(([, ...lines]) => lines.map((line) => lineParser.parse(line)))
+  const maps = blocks.map(blocksParser.parse).map(([, ...lines]) =>
+    lines
+      .map((line) => lineParser.parse(line))
+      .map((r) => ({
+        source: new Range(r.sRangeStart, r.sRangeStart + r.rangeLength - 1),
+        dest: new Range(r.dRangeStart, r.dRangeStart + r.rangeLength - 1),
+      })),
+  )
 
   return { seeds, maps }
 }
 
 /**
  * @param {number} value
- * @param {{ dRangeStart: number; sRangeStart: number; rangeLength: number; }[]} ranges
+ * @param {InputType['maps'][number]} ranges
  */
 function lookupValueInRanges(value, ranges) {
-  for (const { sRangeStart, dRangeStart, rangeLength } of ranges) {
-    if (value >= sRangeStart && value < sRangeStart + rangeLength) {
-      return dRangeStart + (value - sRangeStart)
-    }
+  for (const { dest, source } of ranges) {
+    if (source.includes(value)) return dest.start + (value - source.start)
   }
   return value
 }
@@ -82,9 +86,25 @@ export function part1(input) {
  * @param {InputType} input
  */
 export function part2(input) {
-  return it(input.seeds)
+  const seedRanges = it(input.seeds)
     .groupsOf(2)
-    .flatMap(([start, length]) => range(start, start + length))
-    .map((seed) => input.maps.reduce(lookupValueInRanges, seed))
+    .map(([start, length]) => new Range(start, start + length - 1))
+
+  return it(input.maps)
+    .reduce(
+      (cur, map) =>
+        cur.flatMap((seedRange) =>
+          map
+            .map((line) =>
+              seedRange
+                .intersection(line.source)
+                ?.shiftBy(line.dest.start - line.source.start),
+            )
+            .filter(Boolean)
+            .concat(seedRange.excludeAll(map.map(({ source }) => source))),
+        ),
+      seedRanges,
+    )
+    .map((r) => r.start)
     .min()
 }
