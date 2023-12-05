@@ -67,6 +67,19 @@ export function first(iterable) {
 }
 
 /**
+ * @template T
+ *
+ * @param {Iterable<T>} iterable
+ * @param {T} defaultValue
+ */
+export function firstOrDefault(iterable, defaultValue) {
+  for (const x of iterable) {
+    return x
+  }
+  return defaultValue
+}
+
+/**
  * @param {Iterable<T>} iterable
  *
  * @template T
@@ -503,6 +516,7 @@ export function max(iterable) {
  *    groupsOf: (n: number) => FluentIterable<T[]>
  *    toArray: () => T[]
  *    first: () => T | undefined
+ *    firstOrDefault: (defaultValue: T) => T,
  *    last: () => T | undefined
  *    find: (predicate: (arg: T) => boolean) => T | undefined
  *    skip: (n: number) => FluentIterable<T>
@@ -576,6 +590,8 @@ export const it = (iterable) => {
     groupsOf: (n) => it(groupsOf(iterable, n)),
     toArray: () => toArray(iterable),
     first: () => first(iterable),
+    firstOrDefault: (/** @type {T} */ defaultValue) =>
+      firstOrDefault(iterable, defaultValue),
     last: () => last(iterable),
     find: (/** @type {(value: T) => boolean} */ predicate) =>
       find(iterable, predicate),
