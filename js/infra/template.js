@@ -15,12 +15,12 @@ export const parseInput = t.str().parse
  * @param {InputType} input
  */
 export function part1(input) {
-  return 0
+	return 0
 }
 
 /**
  * @param {InputType} input
  */
 export function part2(input) {
-  return 0
+	return 0
 }

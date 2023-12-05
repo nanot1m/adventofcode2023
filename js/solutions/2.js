@@ -25,25 +25,26 @@ export const parseInput = t.arr(t.tpl2`Game ${idParser}: ${setsParser}`).parse
  * @param {InputType} input
  */
 export function part1(input) {
-  const limits = { red: 12, green: 13, blue: 14 }
+	const limits = { red: 12, green: 13, blue: 14 }
 
-  return it(input)
-    .filter((game) => game.sets.every((p) => p.count <= limits[p.color]))
-    .map((game) => game.id)
-    .sum()
+	return it(input)
+		.filter((game) => game.sets.every((p) => p.count <= limits[p.color]))
+		.map((game) => game.id)
+		.sum()
 }
 
 /**
  * @param {InputType} input
  */
 export function part2(input) {
-  return it(input)
-    .map(({ sets }) =>
-      sets.reduce(
-        (acc, p) => ({ ...acc, [p.color]: Math.max(acc[p.color], p.count) }),
-        { red: 0, green: 0, blue: 0 },
-      ),
-    )
-    .map((p) => p.red * p.green * p.blue)
-    .sum()
+	return it(input)
+		.map(({ sets }) =>
+			sets.reduce((acc, p) => ({ ...acc, [p.color]: Math.max(acc[p.color], p.count) }), {
+				red: 0,
+				green: 0,
+				blue: 0,
+			}),
+		)
+		.map((p) => p.red * p.green * p.blue)
+		.sum()
 }

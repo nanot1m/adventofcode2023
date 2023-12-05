@@ -1,11 +1,11 @@
 {
-  "compilerOptions": {
-    "lib": ["ES2022"],
-    "module": "NodeNext",
-    "target": "ES2022",
-    "moduleResolution": "NodeNext",
+	"compilerOptions": {
+		"lib": ["ES2022"],
+		"module": "NodeNext",
+		"target": "ES2022",
+		"moduleResolution": "NodeNext",
 
-    "strict": true,
-    "strictNullChecks": false
-  }
+		"strict": true,
+		"strictNullChecks": false
+	}
 }

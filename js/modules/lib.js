@@ -10,7 +10,7 @@ import { vec3 } from "./vec3.js"
  * @template T
  */
 export function id(x) {
-  return x
+	return x
 }
 
 /**
@@ -20,7 +20,7 @@ export function id(x) {
  * @template T
  */
 export function minBy(xs, fn) {
-  return xs.reduce((a, b) => (fn(a) < fn(b) ? a : b))
+	return xs.reduce((a, b) => (fn(a) < fn(b) ? a : b))
 }
 
 /**
@@ -30,21 +30,21 @@ export function minBy(xs, fn) {
  * @template T
  */
 export function maxBy(xs, fn) {
-  return xs.reduce((a, b) => (fn(a) > fn(b) ? a : b))
+	return xs.reduce((a, b) => (fn(a) > fn(b) ? a : b))
 }
 
 /**
  * @param {number[]} xs
  */
 export function min(xs) {
-  return minBy(xs, id)
+	return minBy(xs, id)
 }
 
 /**
  * @param {number[]} xs
  */
 export function max(xs) {
-  return maxBy(xs, id)
+	return maxBy(xs, id)
 }
 
 /**
@@ -56,30 +56,30 @@ export function max(xs) {
  * @template T
  */
 export function zip(xs, ...yss) {
-  const minLength = minBy(yss, (ys) => ys.length).length
-  return xs.slice(0, minLength).map((val, i) =>
-    yss.reduce(
-      (a, arr) => {
-        a.push(arr[i])
-        return a
-      },
-      [val],
-    ),
-  )
+	const minLength = minBy(yss, (ys) => ys.length).length
+	return xs.slice(0, minLength).map((val, i) =>
+		yss.reduce(
+			(a, arr) => {
+				a.push(arr[i])
+				return a
+			},
+			[val],
+		),
+	)
 }
 
 /**
  * @param {string} input
  */
 export function readLines(input) {
-  return input.split("\n")
+	return input.split("\n")
 }
 
 /**
  * @param {string} input
  */
 export function readBlocks(input) {
-  return input.split("\n\n")
+	return input.split("\n\n")
 }
 
 /**
@@ -87,7 +87,7 @@ export function readBlocks(input) {
  * @returns
  */
 export function readIntLines(input) {
-  return readLines(input).map(Number)
+	return readLines(input).map(Number)
 }
 
 /**
@@ -95,7 +95,7 @@ export function readIntLines(input) {
  * @param {string} [separator]
  */
 export function readIntArr(input, separator = ",") {
-  return input.split(separator).map(Number)
+	return input.split(separator).map(Number)
 }
 
 /**
@@ -111,19 +111,19 @@ export const mod = (n, m) => ((n % m) + m) % m
  * @template T
  */
 export function functor(value) {
-  return {
-    /**
-     *
-     * @param {(arg: T) => R} fn
-     * @template R
-     */
-    map(fn) {
-      return functor(fn(value))
-    },
-    get() {
-      return value
-    },
-  }
+	return {
+		/**
+		 *
+		 * @param {(arg: T) => R} fn
+		 * @template R
+		 */
+		map(fn) {
+			return functor(fn(value))
+		},
+		get() {
+			return value
+		},
+	}
 }
 
 /**
@@ -132,7 +132,7 @@ export function functor(value) {
  * @template T
  */
 export function cycle(xs, n) {
-  return xs.slice(n).concat(xs.slice(0, n))
+	return xs.slice(n).concat(xs.slice(0, n))
 }
 
 /**
@@ -141,10 +141,10 @@ export function cycle(xs, n) {
  * @template T
  */
 export function at(xs, n) {
-  if (n < 0) {
-    n = xs.length + n
-  }
-  return xs[n]
+	if (n < 0) {
+		n = xs.length + n
+	}
+	return xs[n]
 }
 
 /**
@@ -153,7 +153,7 @@ export function at(xs, n) {
  * @returns
  */
 export function add(a, b) {
-  return a + b
+	return a + b
 }
 
 /**
@@ -162,7 +162,7 @@ export function add(a, b) {
  * @returns
  */
 export function mul(a, b) {
-  return a * b
+	return a * b
 }
 
 /**
@@ -171,19 +171,19 @@ export function mul(a, b) {
  * @param {number[][]} m2
  */
 export function mulMatrix(m1, m2) {
-  /** @type {number[][]} */
-  const result = []
-  for (let i = 0; i < m1.length; i++) {
-    result[i] = []
-    for (let j = 0; j < m2[0].length; j++) {
-      let sum = 0
-      for (let k = 0; k < m1[0].length; k++) {
-        sum += m1[i][k] * m2[k][j]
-      }
-      result[i][j] = sum
-    }
-  }
-  return result
+	/** @type {number[][]} */
+	const result = []
+	for (let i = 0; i < m1.length; i++) {
+		result[i] = []
+		for (let j = 0; j < m2[0].length; j++) {
+			let sum = 0
+			for (let k = 0; k < m1[0].length; k++) {
+				sum += m1[i][k] * m2[k][j]
+			}
+			result[i][j] = sum
+		}
+	}
+	return result
 }
 
 /**
@@ -191,7 +191,7 @@ export function mulMatrix(m1, m2) {
  * @param  {...number[][]} mats
  */
 export function mulMatrices(mat1, ...mats) {
-  return mats.reduce(mulMatrix, mat1)
+	return mats.reduce(mulMatrix, mat1)
 }
 
 /**
@@ -200,7 +200,7 @@ export function mulMatrices(mat1, ...mats) {
  * @returns
  */
 export function compareAsc(a, b) {
-  return a - b
+	return a - b
 }
 
 /**
@@ -209,7 +209,7 @@ export function compareAsc(a, b) {
  * @returns
  */
 export function compareDesc(a, b) {
-  return b - a
+	return b - a
 }
 
 /**
@@ -221,17 +221,17 @@ export function compareDesc(a, b) {
  * @template T
  */
 export function update(xs, i, fn) {
-  return xs
-    .slice(0, i)
-    .concat(fn(xs[i]))
-    .concat(xs.slice(i + 1))
+	return xs
+		.slice(0, i)
+		.concat(fn(xs[i]))
+		.concat(xs.slice(i + 1))
 }
 
 /**
  * @param {number} x
  */
 export function inc(x) {
-  return x + 1
+	return x + 1
 }
 
 /**
@@ -242,7 +242,7 @@ export function inc(x) {
  * @template {{slice(start: number, end?: number): T}} T
  */
 export function splitAt(xs, n) {
-  return [xs.slice(0, n), xs.slice(n)]
+	return [xs.slice(0, n), xs.slice(n)]
 }
 
 /**
@@ -254,24 +254,22 @@ export function splitAt(xs, n) {
  * @template T
  */
 export function rotate2d(arr, clockwise = true) {
-  const height = arr.length
-  const width = it(arr)
-    .map((line) => line.length)
-    .max()
+	const height = arr.length
+	const width = it(arr)
+		.map((line) => line.length)
+		.max()
 
-  const rotated = Array.from({ length: width }, () =>
-    Array.from({ length: height }),
-  )
+	const rotated = Array.from({ length: width }, () => Array.from({ length: height }))
 
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      const value = arr[y]?.[x]
-      const [i, j] = clockwise ? [x, height - y - 1] : [width - x - 1, y]
-      rotated[i][j] = value
-    }
-  }
+	for (let y = 0; y < height; y++) {
+		for (let x = 0; x < width; x++) {
+			const value = arr[y]?.[x]
+			const [i, j] = clockwise ? [x, height - y - 1] : [width - x - 1, y]
+			rotated[i][j] = value
+		}
+	}
 
-  return rotated
+	return rotated
 }
 
 /**
@@ -280,17 +278,17 @@ export function rotate2d(arr, clockwise = true) {
  * @param {boolean} clockwise
  */
 export function rotateStrings2d(strings, clockwise = true) {
-  const rotated = rotate2d(
-    strings.map((str) => str.split("")),
-    clockwise,
-  )
+	const rotated = rotate2d(
+		strings.map((str) => str.split("")),
+		clockwise,
+	)
 
-  return rotated.map((line) =>
-    line
-      .map((x) => x ?? " ")
-      .join("")
-      .trimEnd(),
-  )
+	return rotated.map((line) =>
+		line
+			.map((x) => x ?? " ")
+			.join("")
+			.trimEnd(),
+	)
 }
 
 /**
@@ -301,7 +299,7 @@ export function rotateStrings2d(strings, clockwise = true) {
  * @returns {string}
  */
 export function rotateString2d(str, clockwise = true) {
-  return rotateStrings2d(str.split("\n"), clockwise).join("\n")
+	return rotateStrings2d(str.split("\n"), clockwise).join("\n")
 }
 
 /**
@@ -312,7 +310,7 @@ export function rotateString2d(str, clockwise = true) {
  * @template {unknown[]} T
  */
 export function tuple(...args) {
-  return args
+	return args
 }
 
 /**
@@ -321,75 +319,72 @@ export function tuple(...args) {
  * @template T
  */
 // @ts-ignore
-export const rotate = (
-  /** @type {string | string[] | T[][]} */ rotatable,
-  clockwise = true,
-) => {
-  if (typeof rotatable === "string") {
-    return rotateString2d(rotatable, clockwise)
-  }
-  if (typeof rotatable[0] === "string") {
-    return rotateStrings2d(/** @type {string[]} */ (rotatable), clockwise)
-  }
-  return rotate2d(/** @type {T[][]} */ (rotatable), clockwise)
+export const rotate = (/** @type {string | string[] | T[][]} */ rotatable, clockwise = true) => {
+	if (typeof rotatable === "string") {
+		return rotateString2d(rotatable, clockwise)
+	}
+	if (typeof rotatable[0] === "string") {
+		return rotateStrings2d(/** @type {string[]} */ (rotatable), clockwise)
+	}
+	return rotate2d(/** @type {T[][]} */ (rotatable), clockwise)
 }
 
 /**
  * @param {string} strVal
  */
 export function tryGetSeparator(strVal) {
-  const separators = ["\n\n", "\n", " -> ", ", ", ",", " - ", "-", " "]
-  for (const separator of separators) {
-    if (strVal.includes(separator)) {
-      return separator
-    }
-  }
-  return null
+	const separators = ["\n\n", "\n", " -> ", ", ", ",", " - ", "-", " "]
+	for (const separator of separators) {
+		if (strVal.includes(separator)) {
+			return separator
+		}
+	}
+	return null
 }
 
 /** @type {Record<string, {check: (key: string) => boolean, parse: (strVal: string, key: string) => any}>} */
 const converters = {
-  vec: {
-    check(/** @type {string} */ key) {
-      return key === "vec"
-    },
-    parse(/** @type {string} */ strVal) {
-      const separator = tryGetSeparator(strVal)
-      const [x, y] = strVal.split(separator).map(Number)
-      return V.vec(x, y)
-    },
-  },
-  vec3: {
-    check(/** @type {string} */ key) {
-      return key === "vec3"
-    },
-    parse(/** @type {string} */ strVal) {
-      const separator = tryGetSeparator(strVal)
-      const [x, y, z] = strVal.split(separator).map(Number)
-      return vec3(x, y, z)
-    },
-  },
-  int: {
-    check(/** @type {string} */ key) {
-      return key === "int"
-    },
-    parse(/** @type {string} */ strVal) {
-      return parseInt(strVal, 10)
-    },
-  },
-  array: {
-    check(/** @type {string} */ key) {
-      return key.endsWith("[]")
-    },
-    parse(/** @type {string} */ strVal, /** @type {string} */ key) {
-      const separator = tryGetSeparator(strVal)
-      if (!separator) {
-        return [strToType(strVal, key.slice(0, -2))]
-      }
-      const childType = key.slice(0, -2)
-      return strVal.split(separator).map((x) => strToType(x, childType))
-    },
-  },
+	vec: {
+		check(/** @type {string} */ key) {
+			return key === "vec"
+		},
+		parse(/** @type {string} */ strVal) {
+			const separator = tryGetSeparator(strVal)
+			const [x, y] = strVal.split(separator).map(Number)
+			return V.vec(x, y)
+		},
+	},
+	vec3: {
+		check(/** @type {string} */ key) {
+			return key === "vec3"
+		},
+		parse(/** @type {string} */ strVal) {
+			const separator = tryGetSeparator(strVal)
+			const [x, y, z] = strVal.split(separator).map(Number)
+			return vec3(x, y, z)
+		},
+	},
+	int: {
+		check(/** @type {string} */ key) {
+			return key === "int"
+		},
+		parse(/** @type {string} */ strVal) {
+			return parseInt(strVal, 10)
+		},
+	},
+	array: {
+		check(/** @type {string} */ key) {
+			return key.endsWith("[]")
+		},
+		parse(/** @type {string} */ strVal, /** @type {string} */ key) {
+			const separator = tryGetSeparator(strVal)
+			if (!separator) {
+				return [strToType(strVal, key.slice(0, -2))]
+			}
+			const childType = key.slice(0, -2)
+			return strVal.split(separator).map((x) => strToType(x, childType))
+		},
+	},
 }
 
 /**
@@ -399,15 +394,15 @@ const converters = {
  * @returns {unknown}
  */
 function strToType(strVal, type) {
-  if (!type) {
-    return strVal
-  }
-  for (const key in converters) {
-    if (converters[key].check(type)) {
-      return converters[key].parse(strVal, type)
-    }
-  }
-  return strVal
+	if (!type) {
+		return strVal
+	}
+	for (const key in converters) {
+		if (converters[key].check(type)) {
+			return converters[key].parse(strVal, type)
+		}
+	}
+	return strVal
 }
 
 /**
@@ -417,10 +412,8 @@ function strToType(strVal, type) {
  * @template {string} T
  */
 export function typed(type) {
-  return (strVal) =>
-    /** @type {import("./types.js").TemplateValueReturnType<T>} */ (
-      strToType(strVal, type)
-    )
+	return (strVal) =>
+		/** @type {import("./types.js").TemplateValueReturnType<T>} */ (strToType(strVal, type))
 }
 
 /**
@@ -430,32 +423,30 @@ export function typed(type) {
  * @template {string[]} T
  */
 export function tpl(strings, ...keys) {
-  /**
-   * @param {string} input
-   * @returns {{[P in T[number] as import("./types.js").TemplateKey<P>]: import("./types.js").TemplateValue<P> }}
-   */
-  function parse(input) {
-    /** @type {Record<string, any>} */
-    const model = {}
-    let lastIndex = 0
-    for (let i = 0; i < keys.length; i++) {
-      const start = strings[i].length + lastIndex
-      const end = strings[i + 1]
-        ? input.indexOf(strings[i + 1], start)
-        : input.length
-      const strVal = input.slice(start, end)
-      const [key, type] = keys[i].split("|")
-      model[key] = strToType(strVal, type)
-      lastIndex = end
-    }
-    return /** @type {any} */ (model)
-  }
+	/**
+	 * @param {string} input
+	 * @returns {{[P in T[number] as import("./types.js").TemplateKey<P>]: import("./types.js").TemplateValue<P> }}
+	 */
+	function parse(input) {
+		/** @type {Record<string, any>} */
+		const model = {}
+		let lastIndex = 0
+		for (let i = 0; i < keys.length; i++) {
+			const start = strings[i].length + lastIndex
+			const end = strings[i + 1] ? input.indexOf(strings[i + 1], start) : input.length
+			const strVal = input.slice(start, end)
+			const [key, type] = keys[i].split("|")
+			model[key] = strToType(strVal, type)
+			lastIndex = end
+		}
+		return /** @type {any} */ (model)
+	}
 
-  /**
-   * @param {(arg: ReturnType<typeof parse>) => R} fn
-   * @template R
-   */
-  parse.map = (fn) => (/** @type {string} */ input) => fn(parse(input))
+	/**
+	 * @param {(arg: ReturnType<typeof parse>) => R} fn
+	 * @template R
+	 */
+	parse.map = (fn) => (/** @type {string} */ input) => fn(parse(input))
 
-  return parse
+	return parse
 }

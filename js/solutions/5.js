@@ -48,18 +48,18 @@ const lineParser = t.tpl`${"dRangeStart|int"} ${"sRangeStart|int"} ${"rangeLengt
 const blocksParser = t.arr(t.str())
 
 export const parseInput = (/** @type {string} */ input) => {
-  const [seedsBlock, ...blocks] = blocksParser.parse(input)
-  const seeds = seedsParser.parse(seedsBlock).seeds
-  const maps = blocks.map(blocksParser.parse).map(([, ...lines]) =>
-    lines
-      .map((line) => lineParser.parse(line))
-      .map((r) => ({
-        source: new Range(r.sRangeStart, r.sRangeStart + r.rangeLength - 1),
-        dest: new Range(r.dRangeStart, r.dRangeStart + r.rangeLength - 1),
-      })),
-  )
+	const [seedsBlock, ...blocks] = blocksParser.parse(input)
+	const seeds = seedsParser.parse(seedsBlock).seeds
+	const maps = blocks.map(blocksParser.parse).map(([, ...lines]) =>
+		lines
+			.map((line) => lineParser.parse(line))
+			.map((r) => ({
+				src: new Range(r.sRangeStart, r.sRangeStart + r.rangeLength - 1),
+				dest: new Range(r.dRangeStart, r.dRangeStart + r.rangeLength - 1),
+			})),
+	)
 
-  return { seeds, maps }
+	return { seeds, maps }
 }
 
 /**
@@ -67,44 +67,40 @@ export const parseInput = (/** @type {string} */ input) => {
  * @param {InputType['maps'][number]} ranges
  */
 function lookupValueInRanges(value, ranges) {
-  for (const { dest, source } of ranges) {
-    if (source.includes(value)) return dest.start + (value - source.start)
-  }
-  return value
+	for (const { dest, src } of ranges) {
+		if (src.includes(value)) {
+			return dest.start + (value - src.start)
+		}
+	}
+	return value
 }
 
 /**
  * @param {InputType} input
  */
 export function part1(input) {
-  return it(input.seeds)
-    .map((seed) => input.maps.reduce(lookupValueInRanges, seed))
-    .min()
+	return it(input.seeds)
+		.map((seed) => input.maps.reduce(lookupValueInRanges, seed))
+		.min()
 }
 
 /**
  * @param {InputType} input
  */
 export function part2(input) {
-  const seedRanges = it(input.seeds)
-    .groupsOf(2)
-    .map(([start, length]) => new Range(start, start + length - 1))
-
-  return it(input.maps)
-    .reduce(
-      (cur, map) =>
-        cur.flatMap((seedRange) =>
-          map
-            .map((line) =>
-              seedRange
-                .intersection(line.source)
-                ?.shiftBy(line.dest.start - line.source.start),
-            )
-            .filter(Boolean)
-            .concat(seedRange.excludeAll(map.map(({ source }) => source))),
-        ),
-      seedRanges,
-    )
-    .map((r) => r.start)
-    .min()
+	return it(input.maps)
+		.reduce(
+			(acc, map) =>
+				acc.flatMap((seeds) =>
+					map
+						.map((l) => seeds.intersection(l.src)?.shiftBy(l.dest.start - l.src.start))
+						.filter(Boolean)
+						.concat(seeds.excludeAll(map.map(({ src }) => src))),
+				),
+			it(input.seeds)
+				.groupsOf(2)
+				.map(([start, length]) => new Range(start, start + length - 1)),
+		)
+		.map((r) => r.start)
+		.min()
 }
