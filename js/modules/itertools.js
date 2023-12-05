@@ -472,6 +472,32 @@ export function* distinct(iterable, mapFn = (x) => x) {
 }
 
 /**
+ * @param {Iterable<number>} iterable
+ */
+export function min(iterable) {
+  let min
+  for (const x of iterable) {
+    if (min === undefined || x < min) {
+      min = x
+    }
+  }
+  return min
+}
+
+/**
+ * @param {Iterable<number>} iterable
+ */
+export function max(iterable) {
+  let max
+  for (const x of iterable) {
+    if (max === undefined || x > max) {
+      max = x
+    }
+  }
+  return max
+}
+
+/**
  * @typedef {Iterable<T> & {
  *    map: <R>(fn: (arg: T, index: number) => R) => FluentIterable<R>
  *    groupsOf: (n: number) => FluentIterable<T[]>
@@ -596,13 +622,8 @@ export const it = (iterable) => {
     //#region NumFluentIterable methods
     multiply: () => multiply(/** @type {Iterable<number>} */ (iterable)),
     sum: () => sum(/** @type {Iterable<number>} */ (iterable)),
-    min: () =>
-      /** @type {NumFluentIterable} */ (returnValue).reduce(Math.min, Infinity),
-    max: () =>
-      /** @type {NumFluentIterable} */ (returnValue).reduce(
-        Math.max,
-        -Infinity,
-      ),
+    min: () => min(/** @type {Iterable<number>} */ (iterable)),
+    max: () => max(/** @type {Iterable<number>} */ (iterable)),
     //#endregion
 
     //#region StrFluentIterable methods
