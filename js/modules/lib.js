@@ -330,6 +330,28 @@ export const rotate = (/** @type {string | string[] | T[][]} */ rotatable, clock
 }
 
 /**
+ * Solve a square equation of the form ax^2 + bx + c = 0
+ * @param {number} a The coefficient of x^2
+ * @param {number} b The coefficient of x
+ * @param {number} c The constant term
+ * @returns {[] | [number] | [number, number]} An array of solutions for x
+ */
+export function solveSquareEquation(a, b, c) {
+	const discriminant = b * b - 4 * a * c
+	if (discriminant < 0) {
+		return [] // No real solutions
+	} else if (discriminant === 0) {
+		const x = -b / (2 * a)
+		return [x] // One real solution
+	} else {
+		const sqrtDiscriminant = Math.sqrt(discriminant)
+		const x1 = (-b + sqrtDiscriminant) / (2 * a)
+		const x2 = (-b - sqrtDiscriminant) / (2 * a)
+		return [x1, x2] // Two real solutions
+	}
+}
+
+/**
  * @param {string} strVal
  */
 export function tryGetSeparator(strVal) {

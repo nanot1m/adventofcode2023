@@ -1,6 +1,7 @@
 // @ts-check
 
-import { it } from "../modules/itertools.js"
+import { it, zip } from "../modules/itertools.js"
+import { solveSquareEquation } from "../modules/lib.js"
 import { t } from "../modules/parser.js"
 
 export const useExample = false
@@ -14,25 +15,27 @@ Distance:  9  40  200`
 export const parseInput = t.str().parse
 
 /**
+ *
+ * @param {[number, number]} param0
+ * @returns
+ */
+function countDistance([a, b]) {
+	const aa = Number.isInteger(a) ? a - 1 : Math.floor(a)
+	const bb = Number.isInteger(b) ? b + 1 : Math.ceil(b)
+	return aa - bb + 1
+}
+
+/**
  * @param {InputType} input
  */
 export function part1(input) {
 	const template = t.tpl`Time: ${"times|int[]"}\nDistance: ${"distances|int[]"}`
 	const { times, distances } = template.parse(input)
 
-	const results = []
-	for (let i = 0; i < times.length; i++) {
-		let count = 0
-		for (let speed = 0; speed < times[i]; speed++) {
-			const distance = speed * (times[i] - speed)
-			if (distance > distances[i]) {
-				count++
-			}
-		}
-		results.push(count)
-	}
-
-	return it(results).multiply()
+	return it(zip(times, distances))
+		.map(([time, distance]) => solveSquareEquation(1, -time, distance))
+		.map((solutions) => (solutions.length === 2 ? countDistance(solutions) : 0))
+		.multiply()
 }
 
 /**
@@ -42,26 +45,9 @@ export function part2(input) {
 	const template = t.tpl`Time:${"time|int"}\nDistance:${"distance|int"}`
 	const { time, distance } = template.parse(input.replaceAll(" ", ""))
 
-	let minSpeed = 0
-	let maxSpeed = time
-
-	// find min speed
-	for (let speed = 0; speed < time; speed++) {
-		const d = speed * (time - speed)
-		if (d > distance) {
-			minSpeed = speed
-			break
-		}
-	}
-
-	// find max speed
-	for (let speed = time; speed >= 0; speed--) {
-		const d = speed * (time - speed)
-		if (d > distance) {
-			maxSpeed = speed
-			break
-		}
-	}
-
-	return maxSpeed - minSpeed + 1
+	return it
+		.of([time, distance])
+		.map(([time, distance]) => solveSquareEquation(1, -time, distance))
+		.map((solutions) => (solutions.length === 2 ? countDistance(solutions) : 0))
+		.first()
 }
