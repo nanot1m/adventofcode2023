@@ -73,7 +73,10 @@ const PARSERS = registerParsers({
 				throw new Error(`Invalid array type "${type}" in "${key}"`)
 			}
 			const separator = tryGetSeparator(strVal) ?? ","
-			return strVal.split(separator).map((x) => parser.parse(x, type))
+			return strVal
+				.split(separator)
+				.filter((x) => x !== "")
+				.map((x) => parser.parse(x.trim(), type))
 		},
 	}),
 	tuple: /** @type {const} */ ({
