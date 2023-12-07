@@ -511,6 +511,54 @@ export function max(iterable) {
 }
 
 /**
+ * @template K
+ * @template V
+ *
+ * @typedef {Omit<Map<K,V>, 'values' | 'keys'> & {values: () => FluentIterable<V>, keys: () => FluentIterable<K>}} FluentMap
+ */
+
+/**
+ * @template T
+ *
+ * @param {Iterable<T>} iterable
+ * @returns {FluentMap<T, number>}
+ */
+export function countFrequencies(iterable) {
+	return toMap(
+		iterable,
+		(x) => x,
+		(x, map) => (map.get(x) ?? 0) + 1,
+	)
+}
+
+/**
+ * @template R
+ * @template K
+ * @template V
+ *
+ * @param {Iterable<R>} iterable
+ * @param {(arg: R, acc: Map<K,V>) => K} keyFn
+ * @param {(arg: R, acc: Map<K,V>) => V} valueFn
+ *
+ * @returns {FluentMap<K, V>}
+ */
+export function toMap(iterable, keyFn, valueFn) {
+	/** @type {Map<K, V>} */
+	const map = new Map()
+	const origValues = map.values.bind(map)
+	const origKeys = map.keys.bind(map)
+	Object.assign(map, {
+		values: () => it(origValues()),
+		keys: () => it(origKeys()),
+	})
+	for (const x of iterable) {
+		map.set(keyFn(x, map), valueFn(x, map))
+	}
+	// @ts-ignore
+	return map
+}
+
+/**
  * @typedef {Iterable<T> & {
  *    map: <R>(fn: (arg: T, index: number) => R) => FluentIterable<R>
  *    groupsOf: (n: number) => FluentIterable<T[]>
@@ -540,6 +588,9 @@ export function max(iterable) {
  *    unshift: (...values: T[]) => FluentIterable<T>
  *    skipAfter: (predicate: (arg: T) => boolean) => FluentIterable<T>
  *    distinct: (mapFn?: (arg: T) => any) => FluentIterable<T>
+ *    countFrequencies: () => FluentMap<T, number>
+ *    toMap: <K, V>(keyFn: (arg: T, acc: Map<K,V>) => K, valueFn: (arg: T, acc: Map<K,V>) => V) => FluentMap<K, V>
+ *    sort: (compareFn?: (a: T, b: T) => number) => FluentIterable<T>
  * }} GenericFluentIterable<T>
  *
  *
@@ -623,6 +674,11 @@ export function it(iterable) {
 		unshift: (/** @type {T[]} */ ...values) => it(unshift(iterable, ...values)),
 		skipAfter: (/** @type {(arg: T) => boolean} */ predicate) => it(skipAfter(iterable, predicate)),
 		distinct: (/** @type {(arg: T) => any} */ mapFn) => it(distinct(iterable, mapFn)),
+		countFrequencies: () => countFrequencies(iterable),
+		// @ts-ignore
+		toMap: (keyFn, valueFn) => toMap(iterable, keyFn, valueFn),
+		sort: (/** @type {(a: T, b: T) => number} */ compareFn) =>
+			it(toArray(iterable).sort(compareFn)),
 		//#endregion
 
 		//#region NumFluentIterable methods
