@@ -1,6 +1,6 @@
 // @ts-check
 
-import { add, mul } from "./lib.js"
+import { add, lcm, mul } from "./lib.js"
 
 /**
  * @param {number} [start]
@@ -112,14 +112,15 @@ export function reduce(iterable, reducer, initial) {
 /**
  *
  * @param {T} x
- * @param {(arg: T) => T} f
+ * @param {(arg: T, idx: number) => T} f
  *
  * @template T
  */
 export function* iterate(x, f) {
+	let idx = 0
 	yield x
 	while (true) {
-		x = f(x)
+		x = f(x, idx++)
 		yield x
 	}
 }
@@ -609,6 +610,7 @@ export function toMap(iterable, keyFn, valueFn) {
  *    multiply: () => number
  *    min: () => number
  *    max: () => number
+ *    lcm: () => number
  * }} NumFluentIterable
  */
 
@@ -686,6 +688,7 @@ export function it(iterable) {
 		sum: () => sum(/** @type {Iterable<number>} */ (iterable)),
 		min: () => min(/** @type {Iterable<number>} */ (iterable)),
 		max: () => max(/** @type {Iterable<number>} */ (iterable)),
+		lcm: () => reduce(/** @type {Iterable<number>} */ (iterable), lcm, 1),
 		//#endregion
 
 		//#region StrFluentIterable methods

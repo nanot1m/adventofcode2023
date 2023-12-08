@@ -352,6 +352,27 @@ export function solveSquareEquation(a, b, c) {
 }
 
 /**
+ * Returns the greatest common divisor of two numbers
+ * 
+ * @param {number} a
+ * @param {number} b
+ * @returns {number}
+ */
+export function gcd(a, b) {
+	return !b ? a : gcd(b, a % b)
+}
+
+/**
+ * Returns the least common multiple of two numbers
+ * 
+ * @param {number} a
+ * @param {number} b
+ */
+export function lcm(a, b) {
+	return (a * b) / gcd(a, b)
+}
+
+/**
  * @param {string} strVal
  */
 export function tryGetSeparator(strVal) {
