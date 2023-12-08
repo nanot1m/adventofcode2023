@@ -353,7 +353,7 @@ export function solveSquareEquation(a, b, c) {
 
 /**
  * Returns the greatest common divisor of two numbers
- * 
+ *
  * @param {number} a
  * @param {number} b
  * @returns {number}
@@ -364,132 +364,10 @@ export function gcd(a, b) {
 
 /**
  * Returns the least common multiple of two numbers
- * 
+ *
  * @param {number} a
  * @param {number} b
  */
 export function lcm(a, b) {
 	return (a * b) / gcd(a, b)
-}
-
-/**
- * @param {string} strVal
- */
-export function tryGetSeparator(strVal) {
-	const separators = ["\n\n", "\n", " -> ", ", ", ",", " - ", "-", " "]
-	for (const separator of separators) {
-		if (strVal.includes(separator)) {
-			return separator
-		}
-	}
-	return null
-}
-
-/** @type {Record<string, {check: (key: string) => boolean, parse: (strVal: string, key: string) => any}>} */
-const converters = {
-	vec: {
-		check(/** @type {string} */ key) {
-			return key === "vec"
-		},
-		parse(/** @type {string} */ strVal) {
-			const separator = tryGetSeparator(strVal)
-			const [x, y] = strVal.split(separator).map(Number)
-			return V.vec(x, y)
-		},
-	},
-	vec3: {
-		check(/** @type {string} */ key) {
-			return key === "vec3"
-		},
-		parse(/** @type {string} */ strVal) {
-			const separator = tryGetSeparator(strVal)
-			const [x, y, z] = strVal.split(separator).map(Number)
-			return vec3(x, y, z)
-		},
-	},
-	int: {
-		check(/** @type {string} */ key) {
-			return key === "int"
-		},
-		parse(/** @type {string} */ strVal) {
-			return parseInt(strVal, 10)
-		},
-	},
-	array: {
-		check(/** @type {string} */ key) {
-			return key.endsWith("[]")
-		},
-		parse(/** @type {string} */ strVal, /** @type {string} */ key) {
-			const separator = tryGetSeparator(strVal)
-			if (!separator) {
-				return [strToType(strVal, key.slice(0, -2))]
-			}
-			const childType = key.slice(0, -2)
-			return strVal.split(separator).map((x) => strToType(x, childType))
-		},
-	},
-}
-
-/**
- * @param {string} strVal
- * @param {string} type
- *
- * @returns {unknown}
- */
-function strToType(strVal, type) {
-	if (!type) {
-		return strVal
-	}
-	for (const key in converters) {
-		if (converters[key].check(type)) {
-			return converters[key].parse(strVal, type)
-		}
-	}
-	return strVal
-}
-
-/**
- * @param {T} type
- * @returns {(strVal: string) => import("./types.js").TemplateValueReturnType<T>}
- *
- * @template {string} T
- */
-export function typed(type) {
-	return (strVal) =>
-		/** @type {import("./types.js").TemplateValueReturnType<T>} */ (strToType(strVal, type))
-}
-
-/**
- * @param {TemplateStringsArray} strings
- * @param  {T} keys
- *
- * @template {string[]} T
- */
-export function tpl(strings, ...keys) {
-	/**
-	 * @param {string} input
-	 * @returns {{[P in T[number] as import("./types.js").TemplateKey<P>]: import("./types.js").TemplateValue<P> }}
-	 */
-	function parse(input) {
-		/** @type {Record<string, any>} */
-		const model = {}
-		let lastIndex = 0
-		for (let i = 0; i < keys.length; i++) {
-			const start = strings[i].length + lastIndex
-			const end = strings[i + 1] ? input.indexOf(strings[i + 1], start) : input.length
-			const strVal = input.slice(start, end)
-			const [key, type] = keys[i].split("|")
-			model[key] = strToType(strVal, type)
-			lastIndex = end
-		}
-		return /** @type {any} */ (model)
-	}
-
-	/**
-	 * @param {(arg: ReturnType<typeof parse>) => R} fn
-	 * @template R
-	 */
-	parse.map = (fn) => (/** @type {string} */ input) => fn(parse(input))
-
-	return parse
 }

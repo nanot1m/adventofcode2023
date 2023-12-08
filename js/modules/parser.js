@@ -1,7 +1,19 @@
 // @ts-check
 
 import { V, V3 } from "./index.js"
-import { tryGetSeparator, tuple } from "./lib.js"
+
+/**
+ * @param {string} strVal
+ */
+function tryGetSeparator(strVal) {
+	const separators = ["\n\n", "\n", " -> ", ", ", ",", " - ", "-", " "]
+	for (const separator of separators) {
+		if (strVal.includes(separator)) {
+			return separator
+		}
+	}
+	return null
+}
 
 /**
  * @template T
