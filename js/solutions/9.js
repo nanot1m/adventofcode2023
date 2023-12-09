@@ -12,7 +12,7 @@ export const exampleInput = `\
 
 /** @typedef {ReturnType<typeof parseInput>} InputType */
 
-export const parseInput = t.arr(t.arr(t.int(), " ")).parse
+export const parseInput = t.arr(t.arr(t.int())).parse
 
 const diffsByPairs = (/** @type {Iterable<number>} */ nums) =>
 	it(nums)

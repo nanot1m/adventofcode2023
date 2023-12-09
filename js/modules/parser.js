@@ -6,7 +6,7 @@ import { V, V3 } from "./index.js"
  * @param {string} strVal
  */
 function tryGetSeparator(strVal) {
-	const separators = ["\n\n", "\n", " -> ", ", ", ",", " - ", "-", " "]
+	const separators = ["\n\n", "\n", " -> ", ", ", ",", " - ", " ", "-"]
 	for (const separator of separators) {
 		if (strVal.includes(separator)) {
 			return separator
