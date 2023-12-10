@@ -1,28 +1,67 @@
 // @ts-check
 
+import { find } from "./itertools.js"
 import * as V from "./vec.js"
 
 /**
  * @template T
  *
- * @typedef {Object} BfsPos
+ * @typedef {Object} PathItem
  * @property {V.Vec2} pos
  * @property {number} distance
  * @property {T} value
- * @property {BfsPos<T>} [parent]
+ * @property {PathItem<T>} [parent]
  */
+
+/**
+ *@template T
+ *
+ * @param {Map2d<T>} map2d
+ * @param {(pos: V.Vec2, map: Map2d<T>) => Iterable<V.Vec2>} getNext
+ * @param {V.Vec2} start
+ *
+ * @returns {Iterable<PathItem<T>>}
+ */
+export function* dfs(map2d, getNext, start) {
+	const visited = new Map2d()
+	/** @type {PathItem<T>} */
+	let current = {
+		distance: 0,
+		pos: start,
+		value: map2d.get(start),
+		parent: null,
+	}
+	visited.set(current.pos, true)
+
+	while (current) {
+		const next = find(getNext(current.pos, map2d), (pos) => !visited.has(pos))
+
+		if (next) {
+			visited.set(next, true)
+			current = {
+				distance: current.distance + 1,
+				pos: next,
+				value: map2d.get(next),
+				parent: current,
+			}
+		} else {
+			yield current
+			current = current.parent
+		}
+	}
+}
 
 /**
  *
  * @template T
  *
  * @param {Map2d<T>} map2d
- * @param {(from: BfsPos<T>, to: BfsPos<T>) => boolean} canGoFromTo
+ * @param {(from: PathItem<T>, to: PathItem<T>) => boolean} canGoFromTo
  * @param {V.Vec2 | Iterable<V.Vec2>} start
- * @param {(pos: V.Vec2) => Iterable<V.Vec2>} getNeighbors
+ * @param {(pos: V.Vec2, map: Map2d<T>) => Iterable<V.Vec2>} getNeighbors
  */
 export function* bfs(map2d, canGoFromTo, start, getNeighbors) {
-	/** @type {BfsPos<T>[]} */
+	/** @type {PathItem<T>[]} */
 	const queue = []
 
 	if (V.isVec(start)) {
@@ -53,7 +92,7 @@ export function* bfs(map2d, canGoFromTo, start, getNeighbors) {
 
 		yield current
 
-		for (const next of getNeighbors(current.pos)) {
+		for (const next of getNeighbors(current.pos, map2d)) {
 			const nextBfs = {
 				distance: current.distance + 1,
 				pos: next,
@@ -91,9 +130,11 @@ export class Map2d {
 	/**
 	 *
 	 * @param {V.Vec2} pos
+	 * @param {Map2d<T>} map
 	 * @returns {Iterable<V.Vec2>}
 	 */
-	#getNeighbors = (pos) => V.DIRS_4.map((dir) => V.add(pos, dir)).filter((pos) => this.has(pos))
+	#getNeighbors = (pos, map) =>
+		V.DIRS_4.map((dir) => V.add(pos, dir)).filter((pos) => this.has(pos))
 
 	/**
 	 * @type {Map<number, Map<number, T>>}
@@ -204,9 +245,9 @@ export class Map2d {
 
 	/**
 	 *
-	 * @param {(from: BfsPos<T>, to: BfsPos<T>) => boolean} canGoFromTo
+	 * @param {(from: PathItem<T>, to: PathItem<T>) => boolean} canGoFromTo
 	 * @param {V.Vec2} start
-	 * @returns {Iterable<BfsPos<T>>}
+	 * @returns {Iterable<PathItem<T>>}
 	 */
 	bfs(canGoFromTo, start) {
 		return bfs(this, canGoFromTo, start, this.#getNeighbors)
@@ -214,7 +255,7 @@ export class Map2d {
 
 	/**
 	 *
-	 * @param {(arg: V.Vec2) => Iterable<V.Vec2>} getNeighbors
+	 * @param {(arg: V.Vec2, map: Map2d<T>) => Iterable<V.Vec2>} getNeighbors
 	 */
 	setGetNeighbors(getNeighbors) {
 		this.#getNeighbors = getNeighbors
@@ -290,6 +331,44 @@ export class Map2d {
 		return V.DIRS_8.map((dir) => V.add(pos, dir))
 			.filter((pos) => this.has(pos))
 			.map((pos) => ({ pos, value: this.get(pos) }))
+	}
+
+	/**
+	 * Returns all lines in the map
+	 *
+	 * @returns {Iterable<{pos: V.Vec2; value: T}[]>}
+	 */
+	*lines() {
+		for (let y = this.bounds.minY; y <= this.bounds.maxY; y++) {
+			const line = []
+			for (let x = this.bounds.minX; x <= this.bounds.maxX; x++) {
+				if (this.has([x, y]) === false) {
+					line.push({ pos: V.vec(x, y), value: this.get([x, y]) })
+				}
+			}
+			if (line.length) {
+				yield line
+			}
+		}
+	}
+
+	/**
+	 * Returns all columns in the map
+	 *
+	 * @returns {Iterable<{pos: V.Vec2; value: T}[]>}
+	 */
+	*columns() {
+		for (let x = this.bounds.minX; x <= this.bounds.maxX; x++) {
+			const column = []
+			for (let y = this.bounds.minY; y <= this.bounds.maxY; y++) {
+				if (this.has([x, y]) === false) {
+					column.push({ pos: V.vec(x, y), value: this.get([x, y]) })
+				}
+			}
+			if (column.length) {
+				yield column
+			}
+		}
 	}
 }
 

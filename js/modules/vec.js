@@ -124,6 +124,13 @@ export const min = (vecA, vecB) => [Math.min(vecA[0], vecB[0]), Math.min(vecA[1]
 export const max = (vecA, vecB) => [Math.max(vecA[0], vecB[0]), Math.max(vecA[1], vecB[1])]
 
 /**
+ *
+ * @param {Vec2} vecA
+ * @returns {Vec2}
+ */
+export const neg = (vecA) => [-vecA[0], -vecA[1]]
+
+/**
  * @param {Vec2} start
  * @param {Vec2} end
  */
