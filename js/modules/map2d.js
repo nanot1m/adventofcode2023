@@ -1,6 +1,7 @@
 // @ts-check
 
 import { find } from "./itertools.js"
+import { tuple } from "./lib.js"
 import * as V from "./vec.js"
 
 /**
@@ -336,38 +337,32 @@ export class Map2d {
 	/**
 	 * Returns all lines in the map
 	 *
-	 * @returns {Iterable<{pos: V.Vec2; value: T}[]>}
+	 * @returns {Iterable<[y: number, {pos: V.Vec2; value: T}[]]>}
 	 */
 	*lines() {
 		for (let y = this.bounds.minY; y <= this.bounds.maxY; y++) {
 			const line = []
 			for (let x = this.bounds.minX; x <= this.bounds.maxX; x++) {
-				if (this.has([x, y]) === false) {
-					line.push({ pos: V.vec(x, y), value: this.get([x, y]) })
-				}
+				line.push({ pos: V.vec(x, y), value: this.get([x, y]) })
 			}
-			if (line.length) {
-				yield line
-			}
+
+			yield tuple(y, line)
 		}
 	}
 
 	/**
 	 * Returns all columns in the map
 	 *
-	 * @returns {Iterable<{pos: V.Vec2; value: T}[]>}
+	 * @returns {Iterable<[x: number, {pos: V.Vec2; value: T}[]]>}
 	 */
 	*columns() {
 		for (let x = this.bounds.minX; x <= this.bounds.maxX; x++) {
 			const column = []
 			for (let y = this.bounds.minY; y <= this.bounds.maxY; y++) {
-				if (this.has([x, y]) === false) {
-					column.push({ pos: V.vec(x, y), value: this.get([x, y]) })
-				}
+				column.push({ pos: V.vec(x, y), value: this.get([x, y]) })
 			}
-			if (column.length) {
-				yield column
-			}
+
+			yield tuple(x, column)
 		}
 	}
 }

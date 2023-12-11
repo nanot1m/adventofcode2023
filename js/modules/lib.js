@@ -371,3 +371,30 @@ export function gcd(a, b) {
 export function lcm(a, b) {
 	return (a * b) / gcd(a, b)
 }
+
+/**
+ * @template T
+ *
+ * @param {T[]} xs
+ * @param {number} count
+ * @param {T[][]} [result]
+ * @param {T[]} [current]
+ * @returns {T[][]}
+ */
+export function combinations(xs, count, result = [], current = [], start = 0) {
+	if (count === 0) {
+		result.push([...current])
+		return
+	}
+	for (let i = start; i < xs.length; i++) {
+		current.push(xs[i])
+		combinations(xs, count - 1, result, current, i + 1)
+		current.pop()
+	}
+	return result
+}
+
+// Usage:
+// const result = [];
+// combinations(xs, count, result);
+// console.log(result);
