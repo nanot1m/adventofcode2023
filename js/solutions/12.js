@@ -19,51 +19,49 @@ export const exampleInput = `\
 export const parseInput = t.arr(t.tuple([t.str(), t.arr(t.int())], " "), "\n").parse
 
 /**
+ * @param {string} pattern
+ * @param {number[]} groups
+ * @returns {number}
+ */
+function recur(pattern, groups, pos = 0, curGroupIdx = 0, curGroupLength = 0, memo = new Map()) {
+	const key = `${pos},${curGroupIdx},${curGroupLength}`
+	if (memo.has(key)) return memo.get(key)
+
+	if (pos === pattern.length) {
+		if (curGroupIdx === groups.length - 1 && curGroupLength === groups[curGroupIdx]) return 1
+		if (curGroupIdx === groups.length && curGroupLength === 0) return 1
+		return 0
+	}
+
+	const recurDot = () => {
+		if (curGroupLength === 0) {
+			return recur(pattern, groups, pos + 1, curGroupIdx, 0, memo)
+		}
+		if (curGroupLength === groups[curGroupIdx]) {
+			return recur(pattern, groups, pos + 1, curGroupIdx + 1, 0, memo)
+		}
+		return 0
+	}
+
+	const recurHash = () => {
+		return recur(pattern, groups, pos + 1, curGroupIdx, curGroupLength + 1, memo)
+	}
+
+	let count = 0
+	if (pattern[pos] === "?") count += recurDot() + recurHash()
+	if (pattern[pos] === ".") count += recurDot()
+	if (pattern[pos] === "#") count += recurHash()
+
+	memo.set(key, count)
+	return count
+}
+
+/**
  * @param {InputType} input
  */
 export function part1(input) {
-	/**
-	 * @param {string | string[]} springs
-	 * @param {number[]} damaged
-	 * @returns {number}
-	 */
-	function recur(springs, damaged, pos = 0, groupIdx = 0, groupLen = 0, memo = new Map()) {
-		const key = `${pos},${groupIdx},${groupLen}`
-		if (memo.has(key)) return memo.get(key)
-
-		if (pos === springs.length) {
-			if (groupIdx === damaged.length - 1 && groupLen === damaged[groupIdx]) return 1
-			if (groupIdx === damaged.length && groupLen === 0) return 1
-			return 0
-		}
-
-		let count = 0
-
-		const recurDot = () => {
-			if (groupLen === 0) {
-				count += recur(springs, damaged, pos + 1, groupIdx, 0, memo)
-			} else if (groupLen === damaged[groupIdx]) {
-				count += recur(springs, damaged, pos + 1, groupIdx + 1, 0, memo)
-			}
-		}
-
-		const recurHash = () => {
-			count += recur(springs, damaged, pos + 1, groupIdx, groupLen + 1, memo)
-		}
-
-		if (springs[pos] === ".") recurDot()
-		if (springs[pos] === "#") recurHash()
-		if (springs[pos] === "?") {
-			recurDot()
-			recurHash()
-		}
-
-		memo.set(key, count)
-		return count
-	}
-
 	return it(input)
-		.map(([springs, damaged]) => recur(springs, damaged))
+		.map(([pattern, groups]) => recur(pattern, groups))
 		.sum()
 }
 
@@ -71,10 +69,11 @@ export function part1(input) {
  * @param {InputType} input
  */
 export function part2(input) {
-	return part1(
-		input.map(([springs, damaged]) => [
-			repeatWithDelimiters(springs, "?", 5),
-			repeatWithDelimiters(damaged, [], 5),
-		]),
-	)
+	input = input.map(([pattern, groups]) => [
+		repeatWithDelimiters(pattern, "?", 5),
+		repeatWithDelimiters(groups, [], 5),
+	])
+	return it(input)
+		.map(([pattern, groups]) => recur(pattern, groups))
+		.sum()
 }
