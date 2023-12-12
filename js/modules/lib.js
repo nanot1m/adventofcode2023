@@ -394,7 +394,20 @@ export function combinations(xs, count, result = [], current = [], start = 0) {
 	return result
 }
 
-// Usage:
-// const result = [];
-// combinations(xs, count, result);
-// console.log(result);
+/**
+ * @template {Iterable<any>} T
+ * @param {T} xs
+ * @param {T} delimiters
+ * @param {number} count
+ *
+ * @returns {T extends string ? string : T extends Iterable<infer U> ? U[] : never}
+ */
+export function repeatWithDelimiters(xs, delimiters, count) {
+	/** @type {any} */
+	let result = typeof xs === "string" ? "" : []
+	for (let i = 0; i < count; i++) {
+		if (i > 0) result = result.concat(delimiters)
+		result = result.concat(xs)
+	}
+	return result
+}
