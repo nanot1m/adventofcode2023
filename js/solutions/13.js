@@ -1,6 +1,6 @@
 // @ts-check
 
-import { it, iterate } from "../modules/itertools.js"
+import { it, iterate, range } from "../modules/itertools.js"
 import { tuple } from "../modules/lib.js"
 import { Map2d, parseMap2d } from "../modules/map2d.js"
 import { t } from "../modules/parser.js"
@@ -79,30 +79,26 @@ function getFoldPosition(m, og = { x: 0, y: 0 }) {
 
 /**
  * @param {string[]} strs
- *
+ * @param {number} skip
  * @returns {number | null}
  */
 function findEvenPalindromeCenter(strs, skip = -1) {
-	let longestL = 0
-	let longestR = 0
+	let longestLen = 0
 	let longestIdx = -1
-	let right = 0
-	let left = 0
 
 	for (let i = 0; i < strs.length - 1; i++) {
 		if (i === skip) continue
 
-		left = i
-		right = i + 1
+		let left = i
+		let right = i + 1
 		while (left >= 0 && right < strs.length && strs[left] === strs[right]) {
 			left--
 			right++
 		}
 
 		if (right === strs.length || left === -1) {
-			if (right - left > longestR - longestL) {
-				longestL = left + 1
-				longestR = right - 1
+			if (right - left > longestLen) {
+				longestLen = right - left
 				longestIdx = i
 			}
 		}

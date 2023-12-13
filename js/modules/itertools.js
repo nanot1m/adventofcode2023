@@ -512,6 +512,25 @@ export function max(iterable) {
 }
 
 /**
+ * @template T
+ * @param {Iterable<T>} iterable
+ * @param {(arg: T) => number | string} fn
+ * @returns {T}
+ */
+export function maxBy(iterable, fn) {
+	let max
+	let maxVal
+	for (const x of iterable) {
+		const val = fn(x)
+		if (max === undefined || val > maxVal) {
+			max = x
+			maxVal = val
+		}
+	}
+	return max
+}
+
+/**
  * @template K
  * @template V
  *
@@ -592,6 +611,7 @@ export function toMap(iterable, keyFn, valueFn) {
  *    countFrequencies: () => FluentMap<T, number>
  *    toMap: <K, V>(keyFn: (arg: T, acc: Map<K,V>) => K, valueFn: (arg: T, acc: Map<K,V>) => V) => FluentMap<K, V>
  *    sort: (compareFn?: (a: T, b: T) => number) => FluentIterable<T>
+ * 		maxBy: (fn: (arg: T) => number | string) => T
  * }} GenericFluentIterable<T>
  *
  *
@@ -681,6 +701,7 @@ export function it(iterable) {
 		toMap: (keyFn, valueFn) => toMap(iterable, keyFn, valueFn),
 		sort: (/** @type {(a: T, b: T) => number} */ compareFn) =>
 			it(toArray(iterable).sort(compareFn)),
+		maxBy: (/** @type {(arg: T) => number | string} */ fn) => maxBy(iterable, fn),
 		//#endregion
 
 		//#region NumFluentIterable methods

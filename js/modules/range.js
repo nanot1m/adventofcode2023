@@ -14,6 +14,23 @@ export class Range {
 		this.end = Math.max(start, end)
 	}
 
+	mid() {
+		return (this.start + this.end) / 2
+	}
+
+	midFloor() {
+		return Math.floor(this.mid())
+	}
+
+	/**
+	 * Expands the range by a specified amount.
+	 * @param {number} amount - The amount to expand the range by.
+	 * @returns {Range} - The expanded range.
+	 */
+	expandBy(amount) {
+		return new Range(this.start - amount, this.end + amount)
+	}
+
 	/**
 	 * Calculates the intersection between two ranges.
 	 * @param {Range} otherRange - The other range to intersect with.
@@ -108,6 +125,15 @@ export class Range {
 	 */
 	includes(value) {
 		return value >= this.start && value <= this.end
+	}
+
+	/**
+	 * Checks if the range contains another range.
+	 * @param {Range} otherRange - The other range to check.
+	 * @returns {boolean} - True if the range contains the other range, false otherwise.
+	 */
+	contains(otherRange) {
+		return this.start <= otherRange.start && otherRange.end <= this.end
 	}
 
 	/**
