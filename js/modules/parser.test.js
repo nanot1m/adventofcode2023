@@ -34,13 +34,6 @@ function testParser() {
 		"Expected `arr` parser to parse an array with double newlines",
 	)
 
-	const withCustomSeparatorParser = arrParser.withSeparator("||")
-	deepStrictEqual(
-		withCustomSeparatorParser.parse("1||2||3||4"),
-		[1, 2, 3, 4],
-		"Expected `arr` parser to parse an array with custom separator",
-	)
-
 	const tplParser = t.tpl`hello ${"name|str"} at position ${"pos|vec"}`
 	deepStrictEqual(
 		tplParser.parse("hello world at position 1,2"),

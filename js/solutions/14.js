@@ -1,6 +1,6 @@
 // @ts-check
 
-import { CyclicMap } from "../modules/cyclic-map.js"
+import { CyclicSeq } from "../modules/cyclic-map.js"
 import { V } from "../modules/index.js"
 import { it, iterate } from "../modules/itertools.js"
 import { toString } from "../modules/lib.js"
@@ -65,7 +65,7 @@ export function part2(input) {
 	const dirs = [DIR_TO_VEC.D, DIR_TO_VEC.L, DIR_TO_VEC.U, DIR_TO_VEC.R]
 
 	const mapsIter = iterate(input, (m) => dirs.reduce(tilt, m))
-	const resultMap = CyclicMap.from(it(mapsIter).map(toString)).get(1_000_000_000)
+	const resultMap = CyclicSeq.from(it(mapsIter).map(toString)).get(1_000_000_000)
 
 	return it(parseMap2d(resultMap))
 		.filter((t) => t.value === "O")
