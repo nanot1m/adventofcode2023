@@ -411,3 +411,10 @@ export function repeatWithDelimiters(xs, delimiters, count) {
 	}
 	return result
 }
+
+/**
+ * @param {object} x
+ */
+export function toString(x) {
+	return x.toString()
+}
