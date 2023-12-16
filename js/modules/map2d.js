@@ -1,6 +1,6 @@
 // @ts-check
 
-import { find } from "./itertools.js"
+import { find, it } from "./itertools.js"
 import { tuple } from "./lib.js"
 import * as V from "./vec.js"
 
@@ -363,6 +363,35 @@ export class Map2d {
 			}
 
 			yield tuple(x, column)
+		}
+	}
+
+	/**
+	 * @returns {Map2d<T>}
+	 */
+	clone() {
+		const result = new Map2d()
+		for (const { pos, value } of this) {
+			result.set(pos, value)
+		}
+		return result
+	}
+
+	/**
+	 * @returns {Iterable<{pos: V.Vec2; value: T}>}
+	 */
+	*borders() {
+		for (let i = this.bounds.minX; i <= this.bounds.maxX; i++) {
+			let pos = V.vec(i, this.bounds.minY)
+			yield { pos, value: this.get(pos) }
+			pos = V.vec(i, this.bounds.maxY)
+			yield { pos, value: this.get(pos) }
+		}
+		for (let i = this.bounds.minY; i <= this.bounds.maxY; i++) {
+			let pos = V.vec(this.bounds.minX, i)
+			yield { pos, value: this.get(pos) }
+			pos = V.vec(this.bounds.maxX, i)
+			yield { pos, value: this.get(pos) }
 		}
 	}
 }
