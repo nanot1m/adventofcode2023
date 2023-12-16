@@ -1,6 +1,6 @@
 // @ts-check
 
-import { it } from "../modules/itertools.js"
+import { it, sum } from "../modules/itertools.js"
 import { t } from "../modules/parser.js"
 
 export const useExample = false
@@ -15,43 +15,48 @@ export const parseInput = t.arr(t.str(), ",").parse
 /**
  * @param {string} str
  */
-const getHash = (str) => it(str).reduce((cur, c) => ((cur + c.charCodeAt(0)) * 17) % 256, 0)
+function getHash(str) {
+	let curValue = 0
+
+	for (const c of str) {
+		curValue += c.charCodeAt(0)
+		curValue *= 17
+		curValue %= 256
+	}
+
+	return curValue
+}
 
 /**
  * @param {InputType} input
  */
 export function part1(input) {
-	return it(input)
-		.map((str) => it(str).reduce((cur, c) => ((cur + c.charCodeAt(0)) * 17) % 256, 0))
-		.sum()
+	return it(input).map(getHash).sum()
 }
 
 /**
  * @param {InputType} input
  */
 export function part2(input) {
-	const boxes = it(input)
-		.map((str) => str.split(/[=-]/))
-		.reduce(
-			(boxes, [key, value]) => {
-				const hash = it(key).reduce((cur, c) => ((cur + c.charCodeAt(0)) * 17) % 256, 0)
-				const idx = boxes[hash].findIndex((item) => item.key === key)
-				if (value) {
-					if (~idx) boxes[hash][idx].value = value
-					else boxes[hash].push({ key, value })
-				} else {
-					if (~idx) boxes[hash].splice(idx, 1)
-				}
-				return boxes
-			},
-			Array.from({ length: 256 }, () => []),
-		)
+	/** @type {{key: string, value: string}[][]} */
+	const boxes = Array.from({ length: 256 }, () => [])
+
+	for (const str of input) {
+		const [key, value] = str.split(/[=-]/)
+
+		const box = boxes[getHash(key)]
+		const valueIdx = box.findIndex((item) => item.key === key)
+
+		if (value) {
+			if (~valueIdx) box[valueIdx].value = value
+			else box.push({ key, value })
+		} else {
+			if (~valueIdx) box.splice(valueIdx, 1)
+		}
+	}
 
 	return it(boxes)
-		.map((b, bi) =>
-			it(b)
-				.map((v, vi) => (bi + 1) * (vi + 1) * Number(v.value))
-				.sum(),
-		)
+		.map((b, bi) => b.map((v, vi) => (bi + 1) * (vi + 1) * Number(v.value)))
+		.flatMap((b) => b)
 		.sum()
 }

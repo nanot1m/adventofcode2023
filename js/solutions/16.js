@@ -1,8 +1,8 @@
 // @ts-check
 
-import { V } from "../modules/index.js"
+import { Graph, V } from "../modules/index.js"
 import { it } from "../modules/itertools.js"
-import { Map2d, parseMap2d } from "../modules/map2d.js"
+import { parseMap2d } from "../modules/map2d.js"
 import { DIR_TO_VEC } from "../modules/vec.js"
 
 export const useExample = false
@@ -48,23 +48,18 @@ function getNextDirections(point, dir) {
  * @param {InputType} input
  */
 export function part1(input, startPos = V.vec(0, 0), startDir = DIR_TO_VEC.R) {
-	/** @type {Map2d<Map2d<number>>} */
-	const visited = new Map2d()
-
-	const queue = [{ pos: startPos, dir: startDir }]
-
-	let p
-	while ((p = queue.pop())) {
-		if (visited.get(p.pos)?.has(p.dir)) continue
-		visited.set(p.pos, (visited.get(p.pos) ?? new Map2d()).set(p.dir, 1))
-
-		for (const dir of getNextDirections(input.get(p.pos), p.dir)) {
-			const pos = V.add(p.pos, dir)
-			if (input.has(pos)) queue.push({ pos: pos, dir })
-		}
-	}
-
-	return it(visited).count()
+	const dfsIter = Graph.dfs(
+		(cur) =>
+			getNextDirections(input.get(cur.pos), cur.dir)
+				.map((dir) => ({ pos: V.add(cur.pos, dir), dir }))
+				.filter((next) => input.has(next.pos)),
+		{ pos: startPos, dir: startDir },
+		(p) => `${p.pos.join()}:${p.dir.join()}`,
+	)
+	return it(dfsIter)
+		.map((p) => p.value.pos.join())
+		.distinct()
+		.count()
 }
 
 /**
