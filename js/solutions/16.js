@@ -1,8 +1,7 @@
 // @ts-check
 
-import { Graph, V } from "../modules/index.js"
+import { Array2d, Graph, V } from "../modules/index.js"
 import { it } from "../modules/itertools.js"
-import { parseMap2d } from "../modules/map2d.js"
 import { DIR_TO_VEC } from "../modules/vec.js"
 
 export const useExample = false
@@ -21,7 +20,7 @@ export const exampleInput = `\
 
 /** @typedef {ReturnType<typeof parseInput>} InputType */
 
-export const parseInput = parseMap2d
+export const parseInput = Array2d.parse
 
 /**
  * @param {string} point
@@ -47,13 +46,13 @@ function getNextDirections(point, dir) {
 /**
  * @param {InputType} input
  */
-export function part1(input, startPos = V.vec(0, 0), startDir = DIR_TO_VEC.R) {
+export function part1(input, pos = V.vec(0, 0), dir = DIR_TO_VEC.R) {
 	const dfsIter = Graph.dfs(
 		(cur) =>
-			getNextDirections(input.get(cur.pos), cur.dir)
+			getNextDirections(Array2d.get(input, cur.pos), cur.dir)
 				.map((dir) => ({ pos: V.add(cur.pos, dir), dir }))
-				.filter((next) => input.has(next.pos)),
-		{ pos: startPos, dir: startDir },
+				.filter((p) => Array2d.contains(input, p.pos)),
+		{ pos, dir },
 		(p) => `${p.pos.join()}:${p.dir.join()}`,
 	)
 	return it(dfsIter)
@@ -66,7 +65,7 @@ export function part1(input, startPos = V.vec(0, 0), startDir = DIR_TO_VEC.R) {
  * @param {InputType} input
  */
 export function part2(input) {
-	return it(input.borders())
+	return it(Array2d.borders(input))
 		.flatMap((p) => V.DIRS_4.map((dir) => ({ pos: p.pos, dir })))
 		.map((p) => part1(input, p.pos, p.dir))
 		.max()

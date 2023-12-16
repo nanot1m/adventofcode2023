@@ -1,8 +1,8 @@
 // @ts-check
 
-import { V } from "../modules/index.js"
+import { Array2d, V } from "../modules/index.js"
 import { it } from "../modules/itertools.js"
-import { add, combinations } from "../modules/lib.js"
+import { add, combinations, tuple } from "../modules/lib.js"
 import { parseMap2d } from "../modules/map2d.js"
 import { Range } from "../modules/range.js"
 
@@ -22,22 +22,21 @@ export const exampleInput = `\
 
 /** @typedef {ReturnType<typeof parseInput>} InputType */
 
-export const parseInput = parseMap2d
+export const parseInput = Array2d.parse
 
 /**
  * @param {InputType} input
  */
 export function part1(input, count = 2) {
-	const extraLines = it(input.lines())
-		.filter(([, line]) => line.every((cell) => cell.value === "."))
-		.map(([y]) => y)
-		.toArray()
-	const extraCols = it(input.columns())
-		.filter(([, column]) => column.every((cell) => cell.value === "."))
-		.map(([x]) => x)
-		.toArray()
-
-	const galaxies = it(input)
+	const extraLines = input
+		.map(tuple)
+		.filter(([line]) => line.every((cell) => cell === "."))
+		.map(([, y]) => y)
+	const extraCols = Array2d.transpose(input)
+		.map(tuple)
+		.filter(([line]) => line.every((cell) => cell === "."))
+		.map(([, x]) => x)
+	const galaxies = it(Array2d.traverse(input))
 		.filter((x) => x.value === "#")
 		.toArray()
 
