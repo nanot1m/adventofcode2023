@@ -23,6 +23,7 @@ import { PriorityQueue } from "./priority-queue.js"
 export function* dfs(getNext, start, valToHash) {
 	const visited = new Set()
 	const queue = /** @type {PathItem<T>[]} */ ([{ distance: 0, value: start, parent: null }])
+	visited.add(valToHash(start))
 
 	while (queue.length) {
 		const current = queue.pop()
@@ -55,6 +56,7 @@ export function* bfs(getNext, starts, valToHash) {
 
 	for (const start of starts) {
 		queue.push({ distance: 0, value: start, parent: null })
+		visited.add(valToHash(start))
 	}
 
 	while (queue.length) {
@@ -87,6 +89,7 @@ export function* dijkstra(getNext, getDistance, starts, valToHash) {
 
 	for (const start of starts) {
 		queue.push({ distance: getDistance(start), value: start, parent: null })
+		visited.add(valToHash(start))
 	}
 
 	while (queue.length) {

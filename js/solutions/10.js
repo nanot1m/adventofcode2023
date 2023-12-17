@@ -1,7 +1,7 @@
 // @ts-check
 
 import { Graph, V } from "../modules/index.js"
-import { count, it } from "../modules/itertools.js"
+import { count, find, it } from "../modules/itertools.js"
 import { Map2d, bfs, dfs, parseMap2d } from "../modules/map2d.js"
 import { DIR_TO_VEC } from "../modules/vec.js"
 
@@ -90,10 +90,10 @@ function getNeighbors(pos, inputMap) {
 export function part1(input) {
 	const dfsIter = Graph.dfs(
 		(p) => getNeighbors(p, input),
-		it(input).find((p) => p.value === "S").pos,
+		find(input, (p) => p.value === "S").pos,
 		(p) => p.join(),
 	)
-	return (count(dfsIter) - 1) / 2
+	return count(dfsIter) / 2
 }
 
 /**
