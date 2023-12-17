@@ -1,7 +1,7 @@
 // @ts-check
 
 import { Array2d, Graph, V } from "../modules/index.js"
-import { it } from "../modules/itertools.js"
+import { find } from "../modules/itertools.js"
 
 export const useExample = false
 
@@ -46,7 +46,7 @@ export function part1(input) {
 	)
 
 	const targetPos = V.vec(Array2d.width(input) - 1, Array2d.height(input) - 1)
-	return it(iter).find((p) => V.eq(p.value.pos, targetPos)).distance
+	return find(iter, (p) => V.eq(p.value.pos, targetPos)).distance
 }
 
 /**
@@ -79,7 +79,5 @@ export function part2(input) {
 	)
 
 	const targetPos = V.vec(Array2d.width(input) - 1, Array2d.height(input) - 1)
-	const result = it(iter).find((p) => V.eq(p.value.pos, targetPos) && p.value.distance >= 3)
-
-	return result.distance
+	return find(iter, (p) => V.eq(p.value.pos, targetPos) && p.value.distance >= 3).distance
 }
