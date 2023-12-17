@@ -8,6 +8,7 @@ const right = (/** @type {number} */ i) => (i + 1) << 1
 
 /**
  * @template T
+ *
  * @implements {Iterable<T>}
  */
 export class PriorityQueue {

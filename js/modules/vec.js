@@ -75,6 +75,14 @@ export const add = ([x1, y1], [x2, y2]) => [x1 + x2, y1 + y2]
 export const sub = ([x1, y1], [x2, y2]) => [x1 - x2, y1 - y2]
 
 /**
+ *
+ * @param {Vec2} param0
+ * @param {number} s
+ * @returns {Vec2}
+ */
+export const scale = ([x, y], s) => [x * s, y * s]
+
+/**
  * @param {Dir} dir
  * @returns {Vec2}
  */
