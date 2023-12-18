@@ -2,7 +2,7 @@
 
 import { Graph, V } from "../modules/index.js"
 import { count, find, it } from "../modules/itertools.js"
-import { Map2d, bfs, dfs, parseMap2d } from "../modules/map2d.js"
+import { Map2d, parseMap2d } from "../modules/map2d.js"
 import { DIR_TO_VEC } from "../modules/vec.js"
 
 export const useExample = false
@@ -36,12 +36,12 @@ S is the starting position of the animal; there is a pipe on this tile, but your
 
 /** @type {Record<string, V.Vec2[]>} */
 const PIPE_DIRECTIONS = {
-	"|": [DIR_TO_VEC.U, DIR_TO_VEC.D],
+	"|": [DIR_TO_VEC.D, DIR_TO_VEC.U],
 	"-": [DIR_TO_VEC.L, DIR_TO_VEC.R],
-	L: [DIR_TO_VEC.D, DIR_TO_VEC.R],
-	J: [DIR_TO_VEC.D, DIR_TO_VEC.L],
-	7: [DIR_TO_VEC.U, DIR_TO_VEC.L],
-	F: [DIR_TO_VEC.U, DIR_TO_VEC.R],
+	L: [DIR_TO_VEC.U, DIR_TO_VEC.R],
+	J: [DIR_TO_VEC.U, DIR_TO_VEC.L],
+	7: [DIR_TO_VEC.D, DIR_TO_VEC.L],
+	F: [DIR_TO_VEC.D, DIR_TO_VEC.R],
 	S: V.DIRS_4,
 }
 

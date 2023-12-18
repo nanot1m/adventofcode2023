@@ -28,18 +28,18 @@ export const parseInput = Array2d.parse
  */
 function getNextDirections(point, dir) {
 	const { U, R, D, L } = DIR_TO_VEC
-	if (point === "/" && U === dir) return [L]
-	if (point === "/" && L === dir) return [U]
-	if (point === "/" && D === dir) return [R]
-	if (point === "/" && R === dir) return [D]
-	if (point == "\\" && U === dir) return [R]
-	if (point == "\\" && R === dir) return [U]
-	if (point == "\\" && D === dir) return [L]
-	if (point == "\\" && L === dir) return [D]
+	if (point === "/" && D === dir) return [L]
+	if (point === "/" && L === dir) return [D]
+	if (point === "/" && U === dir) return [R]
+	if (point === "/" && R === dir) return [U]
+	if (point == "\\" && D === dir) return [R]
+	if (point == "\\" && R === dir) return [D]
+	if (point == "\\" && U === dir) return [L]
+	if (point == "\\" && L === dir) return [U]
 	if (point === "|" && R === dir) return [U, D]
 	if (point === "|" && L === dir) return [U, D]
-	if (point === "-" && D === dir) return [L, R]
 	if (point === "-" && U === dir) return [L, R]
+	if (point === "-" && D === dir) return [L, R]
 	return [dir]
 }
 

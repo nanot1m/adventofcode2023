@@ -23,7 +23,7 @@ O.#..O.#.#
 
 export const parseInput = Array2d.parse
 
-function tilt(/** @type {string[][]} */ input, dir = DIR_TO_VEC.D) {
+function tilt(/** @type {string[][]} */ input, dir = DIR_TO_VEC.U) {
 	const nextMap = Array2d.clone(input)
 	const reverse = dir[0] === 1 || dir[1] === 1
 
@@ -49,7 +49,7 @@ function tilt(/** @type {string[][]} */ input, dir = DIR_TO_VEC.D) {
  * @param {InputType} input
  */
 export function part1(input) {
-	return it(Array2d.traverse(tilt(input, DIR_TO_VEC.D)))
+	return it(Array2d.traverse(tilt(input, DIR_TO_VEC.U)))
 		.filter((t) => t.value === "O")
 		.map((t) => Array2d.height(input) - V.y(t.pos))
 		.sum()
@@ -61,7 +61,7 @@ export function part1(input) {
 export function part2(input) {
 	const { D, L, U, R } = DIR_TO_VEC
 
-	const mapsIter = iterate(input, (m) => [D, L, U, R].reduce(tilt, m))
+	const mapsIter = iterate(input, (m) => [U, L, D, R].reduce(tilt, m))
 	const resultMap = CyclicSeq.from(mapsIter, Array2d.toString).get(1_000_000_000)
 
 	return it(Array2d.traverse(resultMap))
