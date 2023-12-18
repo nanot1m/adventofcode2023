@@ -20,7 +20,8 @@
 			"runtimeExecutable": "npm",
 			"skipFiles": ["<node_internals>/**"],
 			"type": "node",
-			"cwd": "${workspaceFolder}/js"
+			"cwd": "${workspaceFolder}/js",
+			"console": "integratedTerminal"
 		}
 	],
 	"inputs": [

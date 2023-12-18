@@ -29,16 +29,12 @@ if (day) {
 		.then((dir) => dir.filter((x) => /^\d+\.js$/.test(x)))
 		.then((xs) => xs.map((x) => x.split(".")[0]))
 		.then((xs) => xs.sort((a, b) => Number(a) - Number(b)))
-		.then((files) => files.map((file) => execDay(file)))
-		.then((promises) => Promise.allSettled(promises))
-		.then((messages) => {
-			messages.forEach((res) => {
-				if (res.status === "rejected") {
-					handleError(res.reason)
-				}
-			})
-		})
-		.catch(handleError)
+		.then((files) =>
+			files.reduce(
+				(acc, file) => acc.then(() => execDay(file).catch(handleError)),
+				Promise.resolve(),
+			),
+		)
 }
 
 /**
