@@ -5,6 +5,15 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
+			"name": "Template",
+			"request": "launch",
+			"runtimeArgs": ["run-script", "tpl", "${input:dayNumber}"],
+			"runtimeExecutable": "npm",
+			"skipFiles": ["<node_internals>/**"],
+			"type": "node",
+			"cwd": "${workspaceFolder}/js"
+		},
+		{
 			"name": "Solve",
 			"request": "launch",
 			"runtimeArgs": ["run-script", "solve", "${fileBasenameNoExtension}"],
@@ -12,6 +21,13 @@
 			"skipFiles": ["<node_internals>/**"],
 			"type": "node",
 			"cwd": "${workspaceFolder}/js"
+		}
+	],
+	"inputs": [
+		{
+			"id": "dayNumber",
+			"type": "promptString",
+			"description": "Day number"
 		}
 	]
 }
