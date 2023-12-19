@@ -22,6 +22,13 @@ export class Range {
 		return Math.floor(this.mid())
 	}
 
+	slice(start = 0, end = this.end) {
+		start = Math.max(start, this.start)
+		end = Math.min(end, this.end)
+		end = Math.max(end, start)
+		return new Range(start, end)
+	}
+
 	/**
 	 * Expands the range by a specified amount.
 	 * @param {number} amount - The amount to expand the range by.
