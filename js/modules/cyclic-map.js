@@ -2,6 +2,7 @@
 
 /**
  * @template T
+ *
  * @implements {Iterable<T>}
  */
 export class CyclicSeq {

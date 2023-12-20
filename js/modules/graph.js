@@ -16,7 +16,7 @@ import { PriorityQueue } from "./priority-queue.js"
  *
  * @param {(value: T, step: PathItem<T>) => Iterable<T>} getNext
  * @param {T} start
- * @param {(value: T) => number | string} valToHash
+ * @param {(value: T) => unknown} valToHash
  *
  * @returns {Iterable<PathItem<T>>}
  */
@@ -44,11 +44,11 @@ export function* dfs(getNext, start, valToHash) {
  *
  * @param {(value: T, step: PathItem<T>) => Iterable<T>} getNext
  * @param {T[]} starts
- * @param {(value: T) => number | string} valToHash
+ * @param {(value: T) => unknown} [valToHash]
  *
  * @returns {Iterable<PathItem<T>>}
  */
-export function* bfs(getNext, starts, valToHash) {
+export function* bfs(getNext, starts, valToHash = (x) => x) {
 	const visited = new Set()
 
 	/** @type {PathItem<T>[]} */
@@ -79,7 +79,7 @@ export function* bfs(getNext, starts, valToHash) {
  * @param {(value: T, step: PathItem<T>) => Iterable<T>} getNext
  * @param {(value: T) => number} getDistance
  * @param {T[]} starts
- * @param {(value: T) => number | string} valToHash
+ * @param {(value: T) => unknown} valToHash
  */
 export function* dijkstra(getNext, getDistance, starts, valToHash) {
 	const visited = new Set()
