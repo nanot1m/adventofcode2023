@@ -1,6 +1,7 @@
 // @ts-check
 
 import { V } from "./index.js"
+import { mod } from "./lib.js"
 
 /**
  * @template T
@@ -117,6 +118,16 @@ export function create(width, height, getVal) {
  */
 export function get(xs, pos) {
 	return xs[pos[1]]?.[pos[0]]
+}
+
+/**
+ * @template T
+ * @param {T[][]} xs
+ * @param {V.Vec2} pos
+ * @returns {T}
+ */
+export function modGet(xs, pos) {
+	return xs[mod(pos[1], height(xs))][mod(pos[0], width(xs))]
 }
 
 /**
