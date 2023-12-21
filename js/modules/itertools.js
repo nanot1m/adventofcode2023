@@ -612,6 +612,8 @@ export function toMap(iterable, keyFn, valueFn) {
  *    toMap: <K, V>(keyFn: (arg: T, acc: Map<K,V>) => K, valueFn: (arg: T, acc: Map<K,V>) => V) => FluentMap<K, V>
  *    sort: (compareFn?: (a: T, b: T) => number) => FluentIterable<T>
  * 		maxBy: (fn: (arg: T) => number | string) => T
+ * 		chain: <R>(fn: (iter: Iterable<T>) => Iterable<R>) => FluentIterable<R>
+ * 		tap: (fn: (arg: T, idx: number) => void) => FluentIterable<T>
  * }} GenericFluentIterable<T>
  *
  *
@@ -702,6 +704,10 @@ export function it(iterable) {
 		sort: (/** @type {(a: T, b: T) => number} */ compareFn) =>
 			it(toArray(iterable).sort(compareFn)),
 		maxBy: (/** @type {(arg: T) => number | string} */ fn) => maxBy(iterable, fn),
+		/** @type {<R>(fn: (iter: Iterable<T>) => Iterable<R>) => FluentIterable<R>} */
+		chain: (fn) => it(fn(iterable)),
+		tap: (/** @type {(arg: T, idx: number) => void} */ fn) =>
+			it(map(iterable, (x, i) => (fn(x, i), x))),
 		//#endregion
 
 		//#region NumFluentIterable methods

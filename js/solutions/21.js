@@ -23,30 +23,41 @@ export const exampleInput = `\
 export const parseInput = A.parse
 
 /**
+ * @param {Iterable<number>} distances
+ */
+function* collectDistances(distances) {
+	let prev = undefined
+	let evenCount = 0
+	let oddCount = 0
+	for (const distance of distances) {
+		if (prev !== undefined && distance !== prev) {
+			yield prev % 2 === 0 ? evenCount : oddCount
+		}
+		prev = distance
+		evenCount += Number(distance % 2 === 0)
+		oddCount += Number(distance % 2 === 1)
+	}
+}
+
+/**
  * @param {InputType} input
  */
 export function part1(input) {
-	const steps = 64
 	const startPos = it(A.traverse(input)).find((p) => p.value === "S").pos
 
 	/**
 	 * @param {V.Vec2} p
 	 */
-	function getNexts(p) {
-		return V.DIRS_4.map((dir) => V.add(p, dir)).filter(
+	const getNexts = (p) =>
+		V.DIRS_4.map((dir) => V.add(p, dir)).filter(
 			(p) => A.contains(input, p) && A.get(input, p) !== "#",
 		)
-	}
 
-	const bfsIter = Graph.bfs(
-		(p, s) => (s.distance < steps ? getNexts(p) : []),
-		[startPos],
-		(p) => p.join(),
-	)
-
-	return it(bfsIter)
-		.filter((p) => p.distance % 2 === steps % 2)
-		.count()
+	return it(Graph.bfs(getNexts, [startPos], (p) => p.join()))
+		.map((p) => p.distance)
+		.chain((distances) => collectDistances(distances))
+		.skip(64)
+		.first()
 }
 
 /**
@@ -55,31 +66,21 @@ export function part1(input) {
 export function part2(input) {
 	const startPos = it(A.traverse(input)).find((p) => p.value === "S").pos
 
-	const inputSize = A.height(input)
-	const startX = startPos[0]
-
-	const maxDistance = inputSize * 3 + startX
-
 	/**
 	 * @param {V.Vec2} p
 	 */
 	const getNexts = (p) =>
 		V.DIRS_4.map((dir) => V.add(p, dir)).filter((p) => A.modGet(input, p) !== "#")
 
-	const bfsIter = Graph.bfs(
-		(p, s) => (s.distance < maxDistance ? getNexts(p) : []),
-		[startPos],
-		(p) => p.join(),
-	)
+	const startX = startPos[0]
+	const inputSize = A.height(input)
 
-	const distances = it(bfsIter)
+	const [d1, d2, d3] = it(Graph.bfs(getNexts, [startPos], (p) => p.join()))
 		.map((p) => p.distance)
-		.toArray()
-
-	const [d1, d2, d3] = it(range(0, maxDistance + 1))
+		.chain((distances) => collectDistances(distances))
 		.skip(startX)
 		.takeEvery(inputSize)
-		.map((i) => it(distances).count((d) => d <= i && d % 2 === i % 2))
+		.take(3)
 		.toArray()
 
 	// diff of the diff
