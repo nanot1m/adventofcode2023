@@ -421,6 +421,21 @@ export function every(iterable, predicate) {
 }
 
 /**
+ * @param {Iterable<T>} iterable
+ * @param {(value: T) => boolean} predicate
+ * @returns {boolean}
+ * @template T
+ */
+export function some(iterable, predicate) {
+	for (const x of iterable) {
+		if (predicate(x)) {
+			return true
+		}
+	}
+	return false
+}
+
+/**
  *
  * @param {Iterable<T>} iterable
  * @param {number} index
@@ -604,6 +619,7 @@ export function toMap(iterable, keyFn, valueFn) {
  *    takeWhile: (predicate: (arg: T) => boolean) => FluentIterable<T>
  *    takeUntil: (predicate: (arg: T) => boolean) => FluentIterable<T>
  *    every: (predicate: (arg: T) => boolean) => boolean
+ * 		some: (predicate: (arg: T) => boolean) => boolean
  *    updateAt: (index: number, fn: (arg: T) => T) => FluentIterable<T>
  *    unshift: (...values: T[]) => FluentIterable<T>
  *    skipAfter: (predicate: (arg: T) => boolean) => FluentIterable<T>
@@ -693,6 +709,7 @@ export function it(iterable) {
 		takeWhile: (/** @type {(arg: T) => boolean} */ predicate) => it(takeWhile(iterable, predicate)),
 		takeUntil: (/** @type {(arg: T) => boolean} */ predicate) => it(takeUntil(iterable, predicate)),
 		every: (/** @type {(arg: T) => boolean} */ predicate) => every(iterable, predicate),
+		some: (/** @type {(arg: T) => boolean} */ predicate) => some(iterable, predicate),
 		updateAt: (/** @type {number} */ index, /** @type {(arg: T) => T} */ fn) =>
 			it(updateAt(iterable, index, fn)),
 		unshift: (/** @type {T[]} */ ...values) => it(unshift(iterable, ...values)),

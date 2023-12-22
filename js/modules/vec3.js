@@ -78,3 +78,23 @@ export const max = (vecA, vecB) => [
  */
 export const mLen = (vecA, vecB = zero3()) =>
 	Math.abs(vecA[0] - vecB[0]) + Math.abs(vecA[1] - vecB[1]) + Math.abs(vecA[2] - vecB[2])
+
+/**
+ *
+ * @param {Vec3} start
+ * @param {Vec3} end
+ */
+export function* line(start, end) {
+	const delta = vec3(
+		Math.sign(end[0] - start[0]),
+		Math.sign(end[1] - start[1]),
+		Math.sign(end[2] - start[2]),
+	)
+
+	let current = start
+	while (mLen(current, end) > 0) {
+		yield current
+		current = add(current, delta)
+	}
+	yield end
+}
