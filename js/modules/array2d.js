@@ -114,7 +114,7 @@ export function create(width, height, getVal) {
 /**
  * @template T
  * @param {T[][]} xs
- * @param {V.Vec2} pos
+ * @param {Readonly<V.Vec2>} pos
  */
 export function get(xs, pos) {
 	return xs[pos[1]]?.[pos[0]]
@@ -188,7 +188,7 @@ export function clone(xs) {
 /**
  * @template T
  * @param {T[][]} xs
- * @param {V.Vec2} pos
+ * @param {Readonly<V.Vec2>} pos
  * @returns {boolean}
  */
 export function contains(xs, pos) {

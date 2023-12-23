@@ -15,7 +15,7 @@
  */
 export const vec = (x, y) => [x, y]
 
-/** @type {Record<string, Vec2>} */
+/** @type {Record<Dir, Vec2>} */
 export const DIR_TO_VEC = {
 	U: [0, -1],
 	D: [0, 1],

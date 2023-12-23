@@ -16,23 +16,29 @@ import { PriorityQueue } from "./priority-queue.js"
  *
  * @param {(value: T, step: PathItem<T>) => Iterable<T>} getNext
  * @param {T} start
- * @param {(value: T) => unknown} valToHash
+ * @param {(value: T) => unknown} [valToHash]
  *
  * @returns {Iterable<PathItem<T>>}
  */
 export function* dfs(getNext, start, valToHash) {
 	const visited = new Set()
 	const queue = /** @type {PathItem<T>[]} */ ([{ distance: 0, value: start, parent: null }])
-	visited.add(valToHash(start))
+	if (valToHash) {
+		visited.add(valToHash(start))
+	}
 
 	while (queue.length) {
 		const current = queue.pop()
 		yield current
 
 		for (const next of getNext(current.value, current)) {
-			const hash = valToHash(next)
-			if (!visited.has(hash)) {
-				visited.add(hash)
+			if (valToHash) {
+				const hash = valToHash(next)
+				if (!visited.has(hash)) {
+					visited.add(hash)
+					queue.push({ distance: current.distance + 1, value: next, parent: current })
+				}
+			} else {
 				queue.push({ distance: current.distance + 1, value: next, parent: current })
 			}
 		}
@@ -48,7 +54,7 @@ export function* dfs(getNext, start, valToHash) {
  *
  * @returns {Iterable<PathItem<T>>}
  */
-export function* bfs(getNext, starts, valToHash = (x) => x) {
+export function* bfs(getNext, starts, valToHash) {
 	const visited = new Set()
 
 	/** @type {PathItem<T>[]} */
@@ -56,7 +62,9 @@ export function* bfs(getNext, starts, valToHash = (x) => x) {
 
 	for (const start of starts) {
 		queue.push({ distance: 0, value: start, parent: null })
-		visited.add(valToHash(start))
+		if (valToHash) {
+			visited.add(valToHash(start))
+		}
 	}
 
 	while (queue.length) {
@@ -64,9 +72,13 @@ export function* bfs(getNext, starts, valToHash = (x) => x) {
 		yield current
 
 		for (const next of getNext(current.value, current)) {
-			const hash = valToHash(next)
-			if (!visited.has(hash)) {
-				visited.add(hash)
+			if (valToHash) {
+				const hash = valToHash(next)
+				if (!visited.has(hash)) {
+					visited.add(hash)
+					queue.push({ distance: current.distance + 1, value: next, parent: current })
+				}
+			} else {
 				queue.push({ distance: current.distance + 1, value: next, parent: current })
 			}
 		}
@@ -79,7 +91,7 @@ export function* bfs(getNext, starts, valToHash = (x) => x) {
  * @param {(value: T, step: PathItem<T>) => Iterable<T>} getNext
  * @param {(value: T) => number} getDistance
  * @param {T[]} starts
- * @param {(value: T) => unknown} valToHash
+ * @param {(value: T) => unknown} [valToHash]
  */
 export function* dijkstra(getNext, getDistance, starts, valToHash) {
 	const visited = new Set()
@@ -89,7 +101,9 @@ export function* dijkstra(getNext, getDistance, starts, valToHash) {
 
 	for (const start of starts) {
 		queue.push({ distance: getDistance(start), value: start, parent: null })
-		visited.add(valToHash(start))
+		if (valToHash) {
+			visited.add(valToHash(start))
+		}
 	}
 
 	while (queue.length) {
@@ -97,10 +111,22 @@ export function* dijkstra(getNext, getDistance, starts, valToHash) {
 		yield current
 
 		for (const next of getNext(current.value, current)) {
-			const hash = valToHash(next)
-			if (!visited.has(hash)) {
-				visited.add(hash)
-				queue.push({ distance: current.distance + getDistance(next), value: next, parent: current })
+			if (valToHash) {
+				const hash = valToHash(next)
+				if (!visited.has(hash)) {
+					visited.add(hash)
+					queue.push({
+						distance: current.distance + getDistance(next),
+						value: next,
+						parent: current,
+					})
+				}
+			} else {
+				queue.push({
+					distance: current.distance + getDistance(next),
+					value: next,
+					parent: current,
+				})
 			}
 		}
 	}
