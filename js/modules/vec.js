@@ -89,6 +89,14 @@ export const scale = ([x, y], s) => [x * s, y * s]
 export const cross = ([x1, y1], [x2, y2]) => x1 * y2 - y1 * x2
 
 /**
+ *
+ * @param {Vec2} vecA
+ * @param {Vec2} vecB
+ * @returns {number}
+ */
+export const dot = ([x1, y1], [x2, y2]) => x1 * x2 + y1 * y2
+
+/**
  * @param {Dir} dir
  * @returns {Vec2}
  */
@@ -165,6 +173,12 @@ export function* segment(start, end) {
  * @type {Vec2}
  */
 export const ZERO = zero()
+
+/**
+ * @param {Vec2} vec
+ * @returns {number}
+ */
+export const len = (vec) => Math.sqrt(vec[0] ** 2 + vec[1] ** 2)
 
 /**
  *

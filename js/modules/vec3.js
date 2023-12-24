@@ -33,6 +33,13 @@ export const zero3 = () => [0, 0, 0]
 export const add = (vecA, vecB) => [vecA[0] + vecB[0], vecA[1] + vecB[1], vecA[2] + vecB[2]]
 
 /**
+ * @param {Vec3} vecA
+ * @param {Vec3} vecB
+ * @returns {Vec3}
+ */
+export const sub = (vecA, vecB) => [vecA[0] - vecB[0], vecA[1] - vecB[1], vecA[2] - vecB[2]]
+
+/**
  *
  * @param {Vec3} vec
  * @param {number[][]} rot
@@ -98,3 +105,49 @@ export function* line(start, end) {
 	}
 	yield end
 }
+
+/**
+ * @param {Vec3} vecA
+ * @param {Vec3} vecB
+ * @returns {number}
+ */
+export const dot = (vecA, vecB) => vecA[0] * vecB[0] + vecA[1] * vecB[1] + vecA[2] * vecB[2]
+
+/**
+ * @param {Vec3} vec
+ * @returns {Vec3}
+ */
+export const normalized = (vec) => {
+	const len = Math.sqrt(dot(vec, vec))
+	return [vec[0] / len, vec[1] / len, vec[2] / len]
+}
+
+/**
+ * @param {Vec3} vecA
+ * @param {Vec3} vecB
+ * @returns {Vec3}
+ */
+export const cross = (vecA, vecB) => [
+	vecA[1] * vecB[2] - vecA[2] * vecB[1],
+	vecA[2] * vecB[0] - vecA[0] * vecB[2],
+	vecA[0] * vecB[1] - vecA[1] * vecB[0],
+]
+
+/**
+ * @param {Vec3} vec
+ * @returns {boolean}
+ */
+export const isZero = (vec) => vec[0] === 0 && vec[1] === 0 && vec[2] === 0
+
+/**
+ * @param {Vec3} vec
+ * @param {number} factor
+ * @returns {Vec3}
+ */
+export const scale = (vec, factor) => [vec[0] * factor, vec[1] * factor, vec[2] * factor]
+
+/**
+ * @param {Vec3} vec
+ * @returns {number}
+ */
+export const magnitudeSquared = (vec) => dot(vec, vec)

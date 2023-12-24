@@ -23,7 +23,9 @@ function handleError(err) {
 }
 
 if (day) {
-	execDay(day).catch(handleError)
+	execDay(day).then(() => {
+		process.exit(0)
+	}, handleError)
 } else {
 	readdir(config.solutionsDir)
 		.then((dir) => dir.filter((x) => /^\d+\.js$/.test(x)))

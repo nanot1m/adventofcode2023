@@ -20,5 +20,8 @@
 		"ts-toolbelt": "9.6.0",
 		"tsutils": "3.21.0",
 		"typescript": "5.3.2"
+	},
+	"dependencies": {
+		"z3-solver": "^4.12.4"
 	}
 }
