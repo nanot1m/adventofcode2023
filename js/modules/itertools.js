@@ -567,6 +567,26 @@ export function countFrequencies(iterable) {
 }
 
 /**
+ * @template T
+ *
+ * @param {T[]} xs
+ * @param {number} count
+ * @param {T[]} [current]
+ * @returns {Iterable<T[]>}
+ */
+export function* combinations(xs, count, current = [], start = 0) {
+	if (count === 0) {
+		yield [...current]
+		return
+	}
+	for (let i = start; i < xs.length; i++) {
+		current.push(xs[i])
+		yield* combinations(xs, count - 1, current, i + 1)
+		current.pop()
+	}
+}
+
+/**
  * @template R
  * @template K
  * @template V
