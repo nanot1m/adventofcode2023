@@ -4,7 +4,7 @@ import { mincut } from "@graph-algorithm/minimum-cut"
 
 import { tuple } from "../modules/lib.js"
 import { t } from "../modules/parser.js"
-import { count, it } from "../modules/itertools.js"
+import { count, it, iterate } from "../modules/itertools.js"
 import { Graph } from "../modules/index.js"
 
 export const useExample = false
@@ -49,6 +49,37 @@ export function part1(input) {
 		count(Graph.bfs((p) => connections.get(p), [start], (p) => p))
 
 	const vertices = [...connections.keys()]
+
+	// const stats = new Map()
+
+	// for (let i = 0; i < 10_000; i++) {
+	// 	const v1 = vertices[Math.floor(Math.random() * vertices.length)]
+	// 	const v2 = vertices[Math.floor(Math.random() * vertices.length)]
+	// 	const v1_to_v2 = it(
+	// 		Graph.bfs(
+	// 			(p) => connections.get(p),
+	// 			[v1],
+	// 			(p) => p,
+	// 		),
+	// 	)
+	// 		.filter((v) => v.value === v2)
+	// 		.first()
+
+	// 	// edges between v1 and v2
+	// 	const path = it(iterate(v1_to_v2, (v) => v.parent))
+	// 		.takeWhile((v) => v != null)
+	// 		.map((v) => v.value)
+	// 		.windowed(2)
+
+	// 	for (const [v11, v22] of path) {
+	// 		const key = [v11, v22].sort().join(" <-> ")
+	// 		if (!stats.has(key)) stats.set(key, 0)
+	// 		stats.set(key, stats.get(key) + 1)
+	// 	}
+	// }
+
+	// const cut = [...stats.entries()].sort((a, b) => b[1] - a[1]).map(([k]) => k.split(" <-> "))
+	// console.log(cut.slice(0, 3))
 
 	const edges = it(connections)
 		.flatMap(([key, value]) => [...value].map((v) => tuple(key, v).sort()))

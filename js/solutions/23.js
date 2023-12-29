@@ -104,21 +104,21 @@ export function part2(input) {
 	/**
 	 * @param {Node} node
 	 * @param {number} distance
-	 * @param {Readonly<V.Vec2>[]} visited
+	 * @param {Map<Readonly<V.Vec2>, boolean>} visited
 	 */
 	function backtrack(node, distance, visited) {
 		if (node.pos === endPos) {
 			result = Math.max(result, distance)
-			return
-		}
-		for (const child of node.children) {
-			if (visited.indexOf(child.node.pos) !== -1) continue
-			visited.push(node.pos)
-			backtrack(child.node, distance + child.distance, visited)
-			visited.pop()
+		} else {
+			for (const child of node.children) {
+				if (visited.get(child.node.pos) === true) continue
+				visited.set(node.pos, true)
+				backtrack(child.node, distance + child.distance, visited)
+				visited.set(node.pos, false)
+			}
 		}
 	}
-	backtrack(graph.get(startPos), 0, [])
+	backtrack(graph.get(startPos), 0, new Map())
 
 	return result
 }

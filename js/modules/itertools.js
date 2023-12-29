@@ -276,7 +276,7 @@ export function* windowed(iterable, n) {
 	for (const x of iterable) {
 		buffer.push(x)
 		if (buffer.length === n) {
-			yield buffer
+			yield buffer.slice()
 			buffer.shift()
 		}
 	}
