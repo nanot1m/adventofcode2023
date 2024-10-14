@@ -1,7 +1,6 @@
 // @ts-check
 
 import { V } from "../modules/index.js"
-import { it, multiply } from "../modules/itertools.js"
 import { Map2d, parseMap2d } from "../modules/map2d.js"
 
 export const useExample = false
@@ -51,7 +50,8 @@ function createNumsMap(map2d) {
  */
 export function part1(input) {
 	const numsMap = createNumsMap(input)
-	return it(input)
+	return input
+		.values()
 		.filter((p) => /\D/.test(p.value) && p.value !== ".")
 		.flatMap((p) => numsMap.around8(p.pos))
 		.distinct((p) => p.value)
@@ -65,15 +65,18 @@ export function part1(input) {
 export function part2(input) {
 	const numsMap = createNumsMap(input)
 
-	return it(input)
+	return input
+		.values()
 		.filter((p) => p.value === "*")
 		.map((p) =>
-			it(numsMap.around8(p.pos))
+			numsMap
+				.around8(p.pos)
+				.values()
 				.distinct((p) => p.value)
 				.map((x) => x.value.val)
 				.toArray(),
 		)
 		.filter((p) => p.length === 2)
-		.map((p) => multiply(p))
+		.map((p) => p.values().multiply())
 		.sum()
 }

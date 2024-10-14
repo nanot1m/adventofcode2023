@@ -1,6 +1,5 @@
 // @ts-check
 
-import { it } from "../modules/itertools.js"
 import { t } from "../modules/parser.js"
 
 export const useExample = false
@@ -17,7 +16,7 @@ QQQJA 483`
 export const parseInput = t.arr(t.tpl`${"hand|str"} ${"bid|int"}`).parse
 
 /**
- * @param {import("../modules/itertools.js").FluentMap<string, number>} scoreByHand
+ * @param {Map<string, number>} scoreByHand
  * @param {string} cardsOrder
  * @returns
  */
@@ -62,12 +61,14 @@ function getCardType([fst, snd]) {
  * @param {InputType} input
  */
 export function part1(input) {
-	const scoreByHand = it(input)
+	const scoreByHand = input
+		.values()
 		.map(({ hand }) => ({
 			hand,
-			values: it(hand)
+			values: Iterator.from(hand)
 				.countFrequencies()
 				.values()
+				.toArray()
 				.sort((a, b) => b - a),
 		}))
 		.toMap(
@@ -75,8 +76,9 @@ export function part1(input) {
 			({ values }) => getCardType(values),
 		)
 
-	return it(input)
+	return input
 		.sort(sortByScoreAndCardsOrder(scoreByHand, "AKQJT98765432"))
+		.values()
 		.map(({ bid }, i) => bid * (i + 1))
 		.sum()
 }
@@ -85,15 +87,17 @@ export function part1(input) {
  * @param {InputType} input
  */
 export function part2(input) {
-	const scoreByHand = it(input)
+	const scoreByHand = input
+		.values()
 		.map(({ hand }) => ({
 			hand,
-			values: it(hand)
+			values: Iterator.from(hand)
 				.filter((card) => card !== "J")
 				.countFrequencies()
 				.values()
+				.toArray()
 				.sort((a, b) => b - a),
-			jokers: it(hand)
+			jokers: Iterator.from(hand)
 				.filter((card) => card === "J")
 				.count(),
 		}))
@@ -106,8 +110,9 @@ export function part2(input) {
 			({ values }) => getCardType(values),
 		)
 
-	return it(input)
+	return input
 		.sort(sortByScoreAndCardsOrder(scoreByHand, "AKQT98765432J"))
+		.values()
 		.map(({ bid }, i) => bid * (i + 1))
 		.sum()
 }

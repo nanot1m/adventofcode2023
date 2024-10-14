@@ -1,5 +1,6 @@
 // @ts-check
-import { access, readdir, stat } from "node:fs/promises"
+import "../modules/iterator-extensions.js"
+import { access, readdir } from "node:fs/promises"
 import { join } from "node:path"
 import { config } from "../infra/config.js"
 import { solution } from "../infra/solution.js"

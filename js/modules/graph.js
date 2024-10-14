@@ -18,7 +18,7 @@ import { PriorityQueue } from "./priority-queue.js"
  * @param {T} start
  * @param {(value: T) => unknown} [valToHash]
  *
- * @returns {Iterable<PathItem<T>>}
+ * @returns {IteratorObject<PathItem<T>>}
  */
 export function* dfs(getNext, start, valToHash) {
 	const visited = new Set()
@@ -48,11 +48,11 @@ export function* dfs(getNext, start, valToHash) {
 /**
  * @template T
  *
- * @param {(value: T, step: PathItem<T>) => Iterable<T>} getNext
+ * @param {(value: T, step: PathItem<T>) => IteratorObject<T>} getNext
  * @param {T[]} starts
  * @param {(value: T) => unknown} [valToHash]
  *
- * @returns {Iterable<PathItem<T>>}
+ * @returns {IteratorObject<PathItem<T>>}
  */
 export function* bfs(getNext, starts, valToHash) {
 	const visited = new Set()

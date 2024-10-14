@@ -1,6 +1,5 @@
 // @ts-check
 
-import { it, zip } from "../modules/itertools.js"
 import { solveSquareEquation } from "../modules/lib.js"
 import { t } from "../modules/parser.js"
 
@@ -32,7 +31,9 @@ export function part1(input) {
 	const template = t.tpl`Time: ${"times|int[]"}\nDistance: ${"distances|int[]"}`
 	const { times, distances } = template.parse(input)
 
-	return it(zip(times, distances))
+	return times
+		.values()
+		.zip(distances)
 		.map(([time, distance]) => solveSquareEquation(1, -time, distance))
 		.map((solutions) => (solutions.length === 2 ? countDistance(solutions) : 0))
 		.multiply()
@@ -44,10 +45,6 @@ export function part1(input) {
 export function part2(input) {
 	const template = t.tpl`Time:${"time|int"}\nDistance:${"distance|int"}`
 	const { time, distance } = template.parse(input.replaceAll(" ", ""))
-
-	return it
-		.of([time, distance])
-		.map(([time, distance]) => solveSquareEquation(1, -time, distance))
-		.map((solutions) => (solutions.length === 2 ? countDistance(solutions) : 0))
-		.first()
+	const solutions = solveSquareEquation(1, -time, distance)
+	return solutions.length === 2 ? countDistance(solutions) : 0
 }

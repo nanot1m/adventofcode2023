@@ -1,7 +1,6 @@
 // @ts-check
 
 import { Array2d, Graph, V } from "../modules/index.js"
-import { find } from "../modules/itertools.js"
 
 export const useExample = false
 
@@ -46,7 +45,7 @@ export function part1(input) {
 	)
 
 	const targetPos = V.vec(Array2d.width(input) - 1, Array2d.height(input) - 1)
-	return find(iter, (p) => V.eq(p.value.pos, targetPos)).distance
+	return iter.find((p) => V.eq(p.value.pos, targetPos)).distance
 }
 
 /**
@@ -56,13 +55,9 @@ export function part2(input) {
 	const iter = Graph.dijkstra(
 		(p) =>
 			p.distance < 3
-				? [
-						{
-							pos: V.add(p.pos, p.dir),
-							dir: p.dir,
-							distance: p.distance + 1,
-						},
-				  ].filter((n) => Array2d.contains(input, n.pos))
+				? [{ pos: V.add(p.pos, p.dir), dir: p.dir, distance: p.distance + 1 }].filter((n) =>
+						Array2d.contains(input, n.pos),
+				  )
 				: V.DIRS_4.filter((dir) => !V.eq(p.dir, V.neg(dir)))
 						.map((dir) => ({
 							pos: V.add(p.pos, dir),
@@ -79,5 +74,5 @@ export function part2(input) {
 	)
 
 	const targetPos = V.vec(Array2d.width(input) - 1, Array2d.height(input) - 1)
-	return find(iter, (p) => V.eq(p.value.pos, targetPos) && p.value.distance >= 3).distance
+	return iter.find((p) => V.eq(p.value.pos, targetPos) && p.value.distance >= 3).distance
 }

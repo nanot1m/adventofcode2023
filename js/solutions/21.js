@@ -49,11 +49,11 @@ export function part1(input) {
 	 * @param {V.Vec2} p
 	 */
 	const getNexts = (p) =>
-		V.DIRS_4.map((dir) => V.add(p, dir)).filter(
-			(p) => A.contains(input, p) && A.get(input, p) !== "#",
-		)
+		V.DIRS_4.values()
+			.map((dir) => V.add(p, dir))
+			.filter((p) => A.contains(input, p) && A.get(input, p) !== "#")
 
-	return it(Graph.bfs(getNexts, [startPos], (p) => p.join()))
+	return Graph.bfs(getNexts, [startPos], (p) => p.join())
 		.map((p) => p.distance)
 		.chain((distances) => collectDistances(distances))
 		.skip(64)
@@ -70,7 +70,9 @@ export function part2(input) {
 	 * @param {V.Vec2} p
 	 */
 	const getNexts = (p) =>
-		V.DIRS_4.map((dir) => V.add(p, dir)).filter((p) => A.modGet(input, p) !== "#")
+		V.DIRS_4.values()
+			.map((dir) => V.add(p, dir))
+			.filter((p) => A.modGet(input, p) !== "#")
 
 	const startX = startPos[0]
 	const inputSize = A.height(input)

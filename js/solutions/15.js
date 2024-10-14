@@ -1,6 +1,5 @@
 // @ts-check
 
-import { it, sum } from "../modules/itertools.js"
 import { t } from "../modules/parser.js"
 
 export const useExample = false
@@ -31,7 +30,7 @@ function getHash(str) {
  * @param {InputType} input
  */
 export function part1(input) {
-	return it(input).map(getHash).sum()
+	return input.values().map(getHash).sum()
 }
 
 /**
@@ -55,7 +54,8 @@ export function part2(input) {
 		}
 	}
 
-	return it(boxes)
+	return boxes
+		.values()
 		.map((b, bi) => b.map((v, vi) => (bi + 1) * (vi + 1) * Number(v.value)))
 		.flatMap((b) => b)
 		.sum()

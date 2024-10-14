@@ -1,7 +1,6 @@
 // @ts-check
 
 import { Graph, V } from "../modules/index.js"
-import { count, find, it } from "../modules/itertools.js"
 import { Map2d, parseMap2d } from "../modules/map2d.js"
 import { DIR_TO_VEC } from "../modules/vec.js"
 
@@ -90,33 +89,30 @@ function getNeighbors(pos, inputMap) {
 export function part1(input) {
 	const dfsIter = Graph.dfs(
 		(p) => getNeighbors(p, input),
-		find(input, (p) => p.value === "S").pos,
+		input.values().find((p) => p.value === "S").pos,
 		(p) => p.join(),
 	)
-	return count(dfsIter) / 2
+	return dfsIter.count() / 2
 }
 
 /**
  * @param {InputType} input
  */
 export function part2(input) {
-	const startPos = it(input).find((p) => p.value === "S").pos
+	const startPos = input.values().find((p) => p.value === "S").pos
 	const pipeLoop = Array.from(
 		Graph.dfs(
 			(p) => getNeighbors(p, input),
-			it(input).find((p) => p.value === "S").pos,
+			input.values().find((p) => p.value === "S").pos,
 			(p) => p.join(),
 		),
 	)
-	const pipesMap = it(pipeLoop)
-		.map((p) => p.value)
-		.reduce((acc, p) => acc.set(p, true), new Map2d())
+	const pipesMap = pipeLoop.map((p) => p.value).reduce((acc, p) => acc.set(p, true), new Map2d())
 
 	// replace trash pipes with '.'
-	const map = it(input).reduce(
-		(acc, p) => acc.set(p.pos, pipesMap.has(p.pos) ? p.value : "."),
-		new Map2d(),
-	)
+	const map = input
+		.values()
+		.reduce((acc, p) => acc.set(p.pos, pipesMap.has(p.pos) ? p.value : "."), new Map2d())
 
 	map.set(startPos, getSReplacer(startPos, [pipeLoop[1].value, pipeLoop.at(-1).value]))
 
@@ -143,7 +139,8 @@ export function part2(input) {
 		}
 	}
 
-	return it(map)
+	return map
+		.values()
 		.filter((p) => insideMap.get(p.pos))
 		.count()
 }

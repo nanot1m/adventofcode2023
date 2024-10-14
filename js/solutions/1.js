@@ -1,6 +1,5 @@
 // @ts-check
 
-import { it, range } from "../modules/itertools.js"
 import { t } from "../modules/parser.js"
 
 export const useExample = false
@@ -16,7 +15,8 @@ export const parseInput = t.arr(t.str()).parse
  * @param {InputType} input
  */
 export function part1(input) {
-	return it(input)
+	return input
+		.values()
 		.map((s) => s.replace(/\D/g, ""))
 		.map((x) => x.at(0) + x.at(-1))
 		.map(Number)
@@ -51,9 +51,10 @@ function* findNumbersInString(line) {
  * @param {InputType} input
  */
 export function part2(input) {
-	return it(input)
+	return input
+		.values()
 		.map(findNumbersInString)
-		.map((x) => [...x])
+		.map((x) => x.toArray())
 		.map((x) => x.at(0) * 10 + x.at(-1))
 		.sum()
 }

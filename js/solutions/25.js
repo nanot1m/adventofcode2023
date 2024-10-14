@@ -4,7 +4,6 @@ import { mincut } from "@graph-algorithm/minimum-cut"
 
 import { tuple } from "../modules/lib.js"
 import { t } from "../modules/parser.js"
-import { count, it, iterate } from "../modules/itertools.js"
 import { Graph } from "../modules/index.js"
 
 export const useExample = false
@@ -46,9 +45,9 @@ export function part1(input) {
 
 	// prettier-ignore
 	const graphLen = (/** @type {string} */ start) =>
-		count(Graph.bfs((p) => connections.get(p), [start], (p) => p))
+		Graph.bfs((p) => connections.get(p).values(), [start], (p) => p).count()
 
-	const vertices = [...connections.keys()]
+	const vertices = connections.keys()
 
 	// const stats = new Map()
 
@@ -81,22 +80,19 @@ export function part1(input) {
 	// const cut = [...stats.entries()].sort((a, b) => b[1] - a[1]).map(([k]) => k.split(" <-> "))
 	// console.log(cut.slice(0, 3))
 
-	const edges = it(connections)
-		.flatMap(([key, value]) => [...value].map((v) => tuple(key, v).sort()))
-		.toMap(
-			(v) => v.join(),
-			(v) => v,
-		)
-		.values()
+	const edges = connections
+		.entries()
+		.flatMap(([key, value]) => value.values().map((v) => tuple(key, v)))
+		.distinct((v) => v.sort().join())
 
-	const origSize = graphLen(vertices[0])
+	const origSize = graphLen(vertices.first())
 
 	for (const [a, b] of mincut(edges)) {
 		connections.get(a).delete(b)
 		connections.get(b).delete(a)
 	}
 
-	const curSize = graphLen(vertices[0])
+	const curSize = graphLen(vertices.first())
 	return curSize * (origSize - curSize)
 }
 

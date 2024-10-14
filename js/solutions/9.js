@@ -1,6 +1,6 @@
 // @ts-check
 
-import { first, it, iterate, last } from "../modules/itertools.js"
+import { iterate } from "../modules/itertools.js"
 import { t } from "../modules/parser.js"
 
 export const useExample = false
@@ -14,21 +14,19 @@ export const exampleInput = `\
 
 export const parseInput = t.arr(t.arr(t.int())).parse
 
-const diffsByPairs = (/** @type {Iterable<number>} */ nums) =>
-	it(nums)
-		.windowed(2)
-		.map(([a, b]) => b - a)
-		.toArray()
+const diffsByPairs = (/** @type {IteratorObject<number>} */ nums) =>
+	nums.windowed(2).map(([a, b]) => b - a)
 
 /**
  * @param {InputType} input
  */
 export function part1(input) {
-	return it(input)
+	return input
+		.values()
 		.map((line) =>
-			it(iterate(line, diffsByPairs))
+			iterate(line.values(), diffsByPairs)
 				.takeWhile((cur) => cur.some(Boolean))
-				.map(last)
+				.map((it) => it.last())
 				.sum(),
 		)
 		.sum()
@@ -38,11 +36,12 @@ export function part1(input) {
  * @param {InputType} input
  */
 export function part2(input) {
-	return it(input)
+	return input
+		.values()
 		.map((line) =>
-			it(iterate(line, diffsByPairs))
+			iterate(line.values(), diffsByPairs)
 				.takeWhile((cur) => cur.some(Boolean))
-				.map(first)
+				.map((it) => it.first())
 				.toArray()
 				.reduceRight((acc, b) => b - acc),
 		)

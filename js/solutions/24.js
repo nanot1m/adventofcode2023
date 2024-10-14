@@ -1,7 +1,6 @@
 // @ts-check
 
 import { V, V3 } from "../modules/index.js"
-import { it, sum } from "../modules/itertools.js"
 import { combinations } from "../modules/lib.js"
 import { t } from "../modules/parser.js"
 import { init } from "z3-solver"
@@ -66,7 +65,8 @@ export function part1(input) {
 	const minPos = 200000000000000 // 7
 	const maxPos = 400000000000000 // 27
 
-	return it(combinations(lines2d, 2))
+	return combinations(lines2d, 2)
+		.values()
 		.map(([l1, l2]) => rayRayIntersection(l1, l2))
 		.count(([x, y]) => x >= minPos && x <= maxPos && y >= minPos && y <= maxPos)
 }
@@ -105,5 +105,5 @@ export async function part2(input) {
 	const model = solver.model()
 	const result = V3.vec3(+model.eval(x), +model.eval(y), +model.eval(z))
 
-	return sum(result)
+	return result.values().sum()
 }

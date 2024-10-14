@@ -1,6 +1,5 @@
 // @ts-check
 
-import { find, it } from "./itertools.js"
 import { tuple } from "./lib.js"
 import * as V from "./vec.js"
 
@@ -18,10 +17,10 @@ import * as V from "./vec.js"
  *@template T
  *
  * @param {Map2d<T>} map2d
- * @param {(pos: V.Vec2, map: Map2d<T>) => Iterable<V.Vec2>} getNext
+ * @param {(pos: V.Vec2, map: Map2d<T>) => IteratorObject<V.Vec2>} getNext
  * @param {V.Vec2} start
  *
- * @returns {Iterable<PathItem<T>>}
+ * @returns {IteratorObject<PathItem<T>>}
  */
 export function* dfs(map2d, getNext, start) {
 	const visited = new Map2d()
@@ -35,7 +34,7 @@ export function* dfs(map2d, getNext, start) {
 	visited.set(current.pos, true)
 
 	while (current) {
-		const next = find(getNext(current.pos, map2d), (pos) => !visited.has(pos))
+		const next = getNext(current.pos, map2d).find((pos) => !visited.has(pos))
 
 		if (next) {
 			visited.set(next, true)
@@ -265,6 +264,10 @@ export class Map2d {
 
 	[Symbol.iterator]() {
 		return toIterable(this.#data)
+	}
+
+	values() {
+		return this[Symbol.iterator]()
 	}
 
 	/**
